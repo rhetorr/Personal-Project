@@ -1,15 +1,16 @@
 import time as clock
-class Clock:
+from math_extra.MathModule import round_to
+class StopWatch:
     def __init__(self):
-        self.last_timestamp = clock.time
+        self.last_timestamp = self.time()
         self.doing_timeout = False
-    def time() -> float:
-        return clock.time
-    def elapsed_since(old_time: float) -> float:
-        return clock.time - old_time
+    def time(self) -> float:
+        return round_to(clock.time(), 0.001)
+    def elapsed_since(self, old_time: float) -> float:
+        return self.time() - old_time
     def timeout(self, duration: float) -> bool:
         if not self.doing_timeout:
-            self.last_timestamp = clock.time
-        done = self.doing_timeout and clock.time - self.last_timestamp > duration
+            self.last_timestamp = self.time()
+        done = ((self.time() - self.last_timestamp) > duration)
         self.doing_timeout = not done
         return done
