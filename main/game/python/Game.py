@@ -14,17 +14,8 @@ class Game:
         self.last_state = self.state
         self.fps = fps
         self.clock = pygame.time.Clock()
+        self.WIN = pygame.display.set_mode((1000,700))
         
-    def get_next_state(self, old_state: GameState):
-        match old_state:
-            case GameState.NOT_RUNNING:
-                self.state = GameState.NOT_RUNNING
-            case GameState.LAUNCHING:
-                self.state = GameState.IN_GAME
-            case GameState.IN_GAME:
-                self.state = GameState.QUITTING
-            case GameState.QUITTING:
-                self.state = GameState.NOT_RUNNING
     def run(self):
         self.game_running = True
         self.pause = False
@@ -33,15 +24,23 @@ class Game:
         
         while self.game_running:
             
-            self.get_next_state(self.state)
             self.last_state = self.state
-            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.state = GameState.QUITTING
             match self.state:
+                case GameState.NOT_RUNNING:
+                    self.state = self.state
                 case GameState.LAUNCHING:
+                    self.state = GameState.IN_GAME
+                case GameState.IN_GAME:
                     self.state = self.state
                 case GameState.QUITTING:
                     self.game_running = False
+                    self.state = GameState.NOT_RUNNING
             
             self.clock.tick(self.fps)
         pygame.quit()
         return self
+    
+Game(60).run()
