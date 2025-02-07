@@ -1,6 +1,6 @@
 import pygame
 from GameState import GameState
-from util.Clock import StopWatch
+from util.RectHelpers import RectHelpers
 
 # Game about a rocket that gets as far as possible dodging asteroids and collecting fuel
 pygame.init()
@@ -13,16 +13,18 @@ class Game:
         self.state = GameState.NOT_RUNNING
         self.last_state = self.state
         self.fps = fps
-        self.clock = pygame.time.Clock()
-        self.WIN = pygame.display.set_mode((1000,700))
+        self.clock = pygame.time.Clock() #game clock
+        self.WIN = pygame.display.set_mode((1000,700)) #creating window
         
-    def run(self):
+    def run(self): #main game loop
         self.game_running = True
         self.pause = False
         self.last_state = self.state
         self.state = GameState.LAUNCHING
         
+        ra = RectHelpers((600,600)).at(100,100).with_color("white")
         while self.game_running:
+            ra = ra.render(self.WIN).with_size(100,100).at(10,10)
             
             self.last_state = self.state
             for event in pygame.event.get():
