@@ -1,48 +1,44 @@
 import pygame
 from GameState import GameState
+from util.ImageHelpers import ImageHelpers
 from util.RectHelpers import RectHelpers
+from visuals import VisualsUtil
+from visuals.VisualsManager import VisualsManager
 
 # Game about a rocket that gets as far as possible dodging asteroids and collecting fuel
 pygame.init()
+pygame.display.init()
 pygame.font.init()
 
-class Game:
-    def __init__(self, fps):
-        self.game_running = False
+class Game(VisualsManager):
+    def __init__(self, caption: str, fps):
+        super().__init__((1200,1000), caption, "LOGO.png")
         self.pause = False
         self.state = GameState.NOT_RUNNING
-        self.last_state = self.state
         self.fps = fps
         self.clock = pygame.time.Clock() #game clock
-        self.WIN = pygame.display.set_mode((1000,700)) #creating window
-        
+    
     def run(self): #main game loop
-        self.game_running = True
-        self.pause = False
-        self.last_state = self.state
         self.state = GameState.LAUNCHING
+        events = pygame.event.get()
         
-        ra = RectHelpers((600,600)).at(100,100).with_color("white")
-        while self.game_running:
-            ra = ra.render(self.WIN).with_size(100,100).at(10,10)
+        while not self.state == GameState.NOT_RUNNING:
+            events = pygame.event.get()
             
-            self.last_state = self.state
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.state = GameState.QUITTING
             match self.state:
-                case GameState.NOT_RUNNING:
-                    self.state = self.state
-                case GameState.LAUNCHING:
+                case GameState.LAUNCHING: #reset all values for game start
+                    self.pause = False
                     self.state = GameState.IN_GAME
-                case GameState.IN_GAME:
+                case GameState.IN_GAME: #game logic
                     self.state = self.state
-                case GameState.QUITTING:
-                    self.game_running = False
+                    
+                    for event in events:
+                        if event.type == pygame.QUIT:
+                            self.state = GameState.QUITTING
+                case GameState.QUITTING | GameState.NOT_RUNNING: #final actions before closing
                     self.state = GameState.NOT_RUNNING
-            
+            self.graphics(self.state)
             self.clock.tick(self.fps)
         pygame.quit()
-        return self
     
-Game(60).run()
+Game("game", 60.0).run()
