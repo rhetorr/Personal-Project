@@ -1,10 +1,7 @@
 from enum import Enum
 
 class GUIPriority(Enum):
-    BACKGROUND = 0
-    SCREEN = 1
-    MENU_GUI = 2
-    SPRITE = 3
-    GAME_GUI = 4
-    PAUSE_GUI = 5
-    OVERLAY = 6
+    MENU = 0
+    GUI = 1
+    SPRITE = 2
+    BACKGROUND = 3

@@ -1,7 +1,7 @@
 import pygame
-
-
 from GameState import GameState
+from util.GUIPriority import GUIPriority
+from .Sprite import Sprite
 from visuals import VisualsUtil
 from util.ImageHelpers import ImageHelpers
 
@@ -12,18 +12,24 @@ class VisualsManager:
         self.WIN = pygame.display.set_mode(resolution, vsync=1) #creating window
         pygame.display.set_caption(caption)
         pygame.display.set_icon(self.i_h.get(icon_filename))
-        self.bg = self.i_h.get("white.jpg")
         
     def render(self, surface, coords):
         return self.WIN.blit(surface, coords)
     
-    def background(self):
-        self.WIN.fill("white")
-        self.render(self.bg, (0,0))
+    def key(self, sprite: Sprite):
+        return sprite.priority.value
     
-    def graphics(self, state: GameState):
-        self.background()
-        # match state:
-        #     case _:
-        #         self.WIN.fill("white")
+    def graphics(self, state: GameState, sprites: list[Sprite]):
+        self.WIN.fill("white")
+        for sprite in sprites:
+            sprite.hide()
+        match state:
+            case GameState.LAUNCHING:
+                self.WIN.fill("green")
+            case GameState.IN_GAME:
+                for sprite in sprites:
+                    sprite.show().render(self.WIN)
+            case _:
+                self.WIN.fill("black")
+        pygame.display.update()
         
