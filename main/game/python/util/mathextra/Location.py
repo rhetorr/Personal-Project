@@ -1,18 +1,36 @@
 import math
+from util.mathextra import MathModule
 
 class Point:
     def __init__(self, x:float, y:float):
-        self.__x = x
-        self.__y = y
+        self.x = x
+        self.y = y
+    def fill(both: float):
+        return Point(both, both)
+    
+    def _key():
+        return Point(0.23123, 8.23643)
         
-    def X(self):
-        return self.__x
-    def Y(self):
-        return self.__y
     def plus(self, other):
-        self.__x += other.__x
-        self.__y += other.__y
-        return self
+        return Point(self.x + other.x, self.y + other.y)
+    def minus(self, other):
+        return Point(self.x - other.x, self.y - other.y)
+    def times(self, other):
+        return Point(self.x * other.x, self.y * other.y)
+    def div(self, other):
+        return Point(self.x / other.x, self.y / other.y)
+    def scale_by(self, num: float):
+        return self.times(Point(num, num))
+    
+    def negate(self):
+        return self.scale_by(-1)
+    def tuple(self):
+        return (self.x, self.y)
+    
+    def norm(self):
+        return math.hypot(self.x, self.y)
+    def angle(self):
+        return Angle().in_radians(MathModule.good_atan2(self.y, self.x))
         
 class Angle:
     def __init__(self):
@@ -20,26 +38,30 @@ class Angle:
         self.deg = 0.0
         self.rot = 0.0
         
-    def inRadians(self, rad: float):
+    def in_radians(self, rad: float):
         self.rad = rad
         self.deg = math.degrees(rad)
         self.rot = rad/(math.pi*2.0)
         
-    def inDegrees(self, deg: float):
+    def in_degrees(self, deg: float):
         self.deg = deg
         self.rad = math.radians(deg)
         self.rot = deg/360.0
         
-    def inRotations(self, rot: float):
+    def in_rotations(self, rot: float):
         self.rot = rot
         self.deg = rot*360.0
         self.rad = rot*(math.pi*2.0)
         
     def plus(self, other):
-        self.rad += other.rad
-        self.deg += other.deg
-        self.rot += other.rot
-        return self
+        return Angle().in_radians(self.rad + other.rad)
+    def minus(self, other):
+        return Angle().in_radians(self.rad - other.rad)
+    def times(self, num):
+        return Angle().in_radians(self.rad * num)
+    
+    def negate(self):
+        return self.times(-1)
     
     def cos(self):
         return math.cos(self.rad)
@@ -58,26 +80,27 @@ class Angle:
 
 class Orientation:
     def __init__(self, x: float, y: float, angle: Angle):
-        self.x = x
-        self.y = y
+        self.__point__ = Point(x, y)
         self.angle = angle
-    def __init__(self, coords: Point, angle: Angle):
-        self.x = coords.X()
-        self.y = coords.Y()
+    def __init__(self, point: Point, angle: Angle):
+        self.__point__ = point(point.x, point.y)
         self.angle = angle
     
     def get_point(self) -> Point:
-        return Point(self.x, self.y)
+        return self.__point__
+    def X(self) -> float:
+        return self.__point__.x
+    def Y(self) -> float:
+        return self.__point__.y
     def get_angle(self) -> Angle:
         return self.angle
     
-    def translate_by(self, new: Point):
-        Point(self.x, self.y).plus(new)
-        return self
-    def rotate_by(self, new: Angle):
-        self.angle.plus(new)
-        return self
     def plus(self, other):
-        self.translate_by(other.get_point())
-        self.rotate_by(other.get_angle())
-        return self
+        return Orientation(self.translate_by(other.get_point()), self.rotate_by(other.get_angle()))
+    def minus(self, other):
+        return Orientation(self.translate_by(other.get_point().negate()), self.rotate_by(other.get_angle().negate()))
+    
+    def translate_by(self, new: Point) -> Point:
+        return self.__point__.plus(new)
+    def rotate_by(self, new: Angle) -> Angle:
+        return self.angle.plus(new)
