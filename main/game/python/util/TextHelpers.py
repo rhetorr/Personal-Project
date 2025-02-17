@@ -1,7 +1,7 @@
 import pygame
 
+from visuals.VisualsUtil import surface_size
 from util.mathextra.Location import Point
-from util.mathextra.MathModule import mean
 
 class TextHelpers:
     def __init__(self, window: pygame.Surface, font, size: float):
@@ -45,8 +45,9 @@ class TextHelpers:
         self.__write__.strikethrough = self.strikethrough
         self.__write__.underline = self.underline
         temp = self.__write__.render(text, 1, color)
-        if pos == Point._key():
-            pos = Point(mean(self.__window__.get_width(),temp.get_width()),mean(self.__window__.get_height(),temp.get_height()))
+        mid = surface_size(temp).with_mid(surface_size(self.__window__))
+        if pos.equals(Point._key()):
+            pos = mid
         self.__window__.blit(temp, pos.tuple())
         return self
     def render_highlighted(self, text: str, color, highlight_color, pos: Point):
@@ -55,7 +56,8 @@ class TextHelpers:
         self.__write__.strikethrough = self.strikethrough
         self.__write__.underline = self.underline
         temp = self.__write__.render(text, 1, color, highlight_color)
-        if pos == Point._key():
-            pos = Point(mean(self.__window__.get_width(),temp.get_width()),mean(self.__window__.get_height(),temp.get_height()))
+        mid = surface_size(temp).with_mid(surface_size(self.__window__))
+        if pos.equals(Point._key()):
+            pos = mid
         self.__window__.blit(temp, pos.tuple())
         return self

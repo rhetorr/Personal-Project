@@ -6,10 +6,12 @@ class Point:
         self.x = x
         self.y = y
     def fill(both: float):
-        return Point(both, both)
-    
+        return Point(both, both).with_mid(Point(both, both))
+    def with_mid(self, window_size):
+        self.mid = window_size.minus(self).div_by(2)
+        return self
     def _key():
-        return Point(0.23123, 8.23643)
+        return Point(1.23234, 242.3322)
         
     def plus(self, other):
         return Point(self.x + other.x, self.y + other.y)
@@ -21,11 +23,18 @@ class Point:
         return Point(self.x / other.x, self.y / other.y)
     def scale_by(self, num: float):
         return self.times(Point(num, num))
+    def div_by(self, num: float):
+        return self.div(Point(num, num))
     
     def negate(self):
         return self.scale_by(-1)
-    def tuple(self):
+    
+    def tuple(self)->tuple[float, float]:
         return (self.x, self.y)
+    def equals(self, other)->bool:
+        return (self.x == other.x) and (self.y == other.y)
+    def is_key(self)->bool:
+        return self.equals(self._key())
     
     def norm(self):
         return math.hypot(self.x, self.y)

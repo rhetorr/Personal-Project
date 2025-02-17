@@ -10,3 +10,8 @@ class RectHelpers():
         pygame.draw.rect(win, color, self.__rect_value__)
     def get_rect(self):
         return self.__rect_value__
+    def at(self, pos: Point):
+        self.pos = pos
+        self.__rect_value__.x = pos.x
+        self.__rect_value__.y = pos.y
+        return self
