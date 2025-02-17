@@ -1,27 +1,27 @@
-import math
 import pygame
-from GameStates import FullState
+from GameStates import GameStates
 from util.mathextra.Location import Point
 from visuals import VisualsUtil
 from util.ImageHelpers import ImageHelpers
 from util.RectHelpers import RectHelpers
-from util.GUIPriority import GUIPriority
+from visuals.VisualsUtil import surface_size
 
 class Sprite(RectHelpers):
-    def __init__(self, size: Point, priority: GUIPriority, *appear_states: FullState):
+    def __init__(self, window:pygame.Surface, size: Point, *appear_states: GameStates):
         super().__init__(size.negate().minus(Point.fill(100)), size)
         super().__delattr__("__rect_value__")
-        self.priority = priority
         self.appear_states = appear_states
         self.sprite = pygame.surface.Surface(size.tuple())
         self.img_help = ImageHelpers(VisualsUtil._ASSETS_PATH)
         self.__saved_pos__ = Point.fill(0)
         self._shown_ = False
+        self.__window__ = window
+        self.size.with_mid(surface_size(self.__window__))
     def from_image(self, name):
         self.sprite = self.img_help.resize(self.img_help.get(name), self.size)
         return self
-    def render(self, window: pygame.Surface):
-        window.blit(self.sprite, self.pos.tuple())
+    def render(self):
+        self.__window__.blit(self.sprite, self.pos.tuple())
     def hide(self):
         if self._shown_:
             self.__saved_pos__ = self.pos
@@ -37,7 +37,9 @@ class Sprite(RectHelpers):
         else:
             self.__saved_pos__ = pos
         return self
-    def check_appear(self, *state: FullState)->bool:
+    
+    
+    def check_appear(self, *state: GameStates)->bool:
         for j in state:
             for i in self.appear_states:
                 if i == state:

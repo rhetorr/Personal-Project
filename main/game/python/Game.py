@@ -1,7 +1,6 @@
 import pygame
-from GameStates import FullState, GameState, MenuPages, PlayState, in_game
+from GameStates import GameStates
 from util.mathextra.Location import Point
-from util.GUIPriority import GUIPriority
 from visuals.Sprite import Sprite
 from util.ImageHelpers import ImageHelpers
 from util.RectHelpers import RectHelpers
@@ -17,28 +16,33 @@ pygame.font.init()
 class Game(VisualsManager):
     def __init__(self, caption: str, fps):
         super().__init__((1200,1000), caption, "LOGO.png")
-        self.state = FullState(GameState.NOT_RUNNING, PlayState.OUT_OF_BOUNDS, MenuPages.OUT_OF_BOUNDS)
+        self.state = GameStates.LAUNCHING
         self.fps = fps
         self.clock = pygame.time.Clock() #game clock
+        
+    def set_state(self, newState: GameStates) -> GameStates:
+        old_state = self.state
+        self.state = newState
+        return old_state
     
     def run(self): #main game loop
-        self.state = FullState(GameState.LAUNCHING, PlayState.OUT_OF_BOUNDS, MenuPages.OUT_OF_BOUNDS)
-        player = Sprite(Point.fill(100), GUIPriority.SPRITE, in_game()).from_image("LOGO.png")
+        player = Sprite(self.window, Point.fill(100), GameStates.PLAYING, GameStates.LOST, GameStates.STARTING).from_image("LOGO.png")
         dt_last_frame = 0.0
         
-        while not self.state.game_state == GameState.NOT_RUNNING:
+        self.set_state(GameStates.LAUNCHING)
+        while self.state.value.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.state.game_state = GameState.QUITTING
+                    self.set_state(GameStates.NOT_RUNNING)
             
-            match self.state.game_state:
-                case GameState.LAUNCHING: #reset all values for game start
-                    self.state.game_state = GameState.IN_GAME
-                case GameState.IN_GAME: #game logic
-                    self.state = self.state
-                case GameState.QUITTING | GameState.NOT_RUNNING: #final actions before closing
-                    self.state.game_state = GameState.NOT_RUNNING
-            self.graphics(self.state, [player])
+            match self.state:
+                case GameStates.LAUNCHING: #reset all values for game start
+                    self.set_state(GameStates.MENU)
+                case GameStates.SETTINGS | GameStates.MENU | GameStates.STARTING | GameStates.PLAYING | GameStates.LOST: #game logic
+                    dt_last_frame = 0
+                case GameStates.QUITTING, GameStates.NOT_RUNNING: #final actions before closing
+                    self.set_state(GameStates.NOT_RUNNING)
+            self.graphics(self.state, player)
             dt_last_frame = self.clock.tick(self.fps) / 1000
         pygame.quit()
     
