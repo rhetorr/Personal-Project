@@ -1,5 +1,6 @@
 import pygame
 from GameStates import GameStates
+from rocket.Rocket import Rocket
 from util.mathextra.Location import Point
 from visuals.Sprite import Sprite
 from util.ImageHelpers import ImageHelpers
@@ -26,7 +27,7 @@ class Game(VisualsManager):
         return old_state
     
     def run(self): #main game loop
-        player = Sprite(self._window_, Point.fill(100), GameStates.PLAYING, GameStates.LOST, GameStates.STARTING).from_image("LOGO.png")
+        player = Rocket(self._window_)
         dt_last_frame = 0.0
         
         self.set_state(GameStates.LAUNCHING)

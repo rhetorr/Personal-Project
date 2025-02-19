@@ -1,5 +1,6 @@
 import pygame
 from GameStates import GameStates
+from rocket.Rocket import Rocket
 from visuals.Window import Window
 from util.mathextra.Location import Point
 from util.TextHelpers import TextHelpers
@@ -20,7 +21,7 @@ class VisualsManager:
     def render(self, surface, coords):
         return self._window_.blit(surface, coords)
     
-    def graphics(self, state: GameStates, player: Sprite):
+    def graphics(self, state: GameStates, player: Rocket):
         self._window_.fill("white")
         player.hide()
         match state:
