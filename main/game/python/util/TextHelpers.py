@@ -1,10 +1,11 @@
 import pygame
 
+from visuals.Window import Window
 from visuals.VisualsUtil import surface_size
 from util.mathextra.Location import Point
 
 class TextHelpers:
-    def __init__(self, window: pygame.Surface, font, size: float):
+    def __init__(self, window: Window, font, size: float):
         self.__window__ = window
         self._font_ = font
         self._size_ = size

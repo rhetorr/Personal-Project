@@ -26,7 +26,7 @@ class Game(VisualsManager):
         return old_state
     
     def run(self): #main game loop
-        player = Sprite(self.window, Point.fill(100), GameStates.PLAYING, GameStates.LOST, GameStates.STARTING).from_image("LOGO.png")
+        player = Sprite(self._window_, Point.fill(100), GameStates.PLAYING, GameStates.LOST, GameStates.STARTING).from_image("LOGO.png")
         dt_last_frame = 0.0
         
         self.set_state(GameStates.LAUNCHING)
