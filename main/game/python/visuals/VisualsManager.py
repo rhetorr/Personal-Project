@@ -1,7 +1,6 @@
 import pygame
 from GameStates import GameStates
 from rocket.Rocket import Rocket
-from visuals.Window import Window
 from util.mathextra.Location import Point
 from util.TextHelpers import TextHelpers
 from .Sprite import Sprite
@@ -12,7 +11,7 @@ class VisualsManager:
     def __init__(self, resolution: tuple, caption: str, icon_filename: str):
         self.i_h = ImageHelpers(VisualsUtil._ASSETS_PATH)
         
-        self._window_ = Window(resolution[0], resolution[1]) #creating window
+        self._window_ = pygame.display.set_mode(resolution[0], resolution[1]) #creating window
         self._window_.set_caption(caption)
         self.icon = Sprite(self._window_, Point.fill(100), GameStates.MENU).from_image(icon_filename)
         self._window_.set_icon(self.icon.sprite)
