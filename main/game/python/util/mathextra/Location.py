@@ -7,8 +7,10 @@ class Point:
         self.y = y
     def fill(both: float):
         return Point(both, both).with_mid(Point(both, both))
+    def from_tuple(tup: tuple[float, float]):
+        return Point(tup[0], tup[1])
     def with_mid(self, window_size):
-        self.mid = window_size.minus(self).div_by(2)
+        self.mid = Point(window_size.x/2-self.x/2, window_size.y/2-self.y/2)
         return self
     def _key():
         return Point(1.23234, 242.3322)

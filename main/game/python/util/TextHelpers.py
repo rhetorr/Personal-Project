@@ -1,6 +1,5 @@
 import pygame
 
-from visuals.VisualsUtil import surface_size
 from util.mathextra.Location import Point
 
 class TextHelpers:
@@ -39,25 +38,27 @@ class TextHelpers:
         self._size_ = size
         self.__write__ = pygame.font.SysFont(self._font_, self._size_)
         return self
-    def render(self, text: str, color, pos: Point):
+    def make_text(self, text: str, color):
         self.__write__.bold = self.bold
         self.__write__.italic = self.italic
         self.__write__.strikethrough = self.strikethrough
         self.__write__.underline = self.underline
-        temp = self.__write__.render(text, 1, color)
-        mid = surface_size(temp).with_mid(surface_size(self.__window__))
+        return self.__write__.render(text, 1, color)
+    def make_text_highlighted(self, text: str, color, highlight_color):
+        self.__write__.bold = self.bold
+        self.__write__.italic = self.italic
+        self.__write__.strikethrough = self.strikethrough
+        self.__write__.underline = self.underline
+        return self.__write__.render(text, 1, color, highlight_color)
+    def render(self, temp: pygame.Surface, pos: Point):
+        mid = Point(self.__window__.get_width()/2-temp.get_width()/2, self.__window__.get_height()/2-temp.get_height()/2)
         if pos.equals(Point._key()):
             pos = mid
         self.__window__.blit(temp, pos.tuple())
         return self
-    def render_highlighted(self, text: str, color, highlight_color, pos: Point):
-        self.__write__.bold = self.bold
-        self.__write__.italic = self.italic
-        self.__write__.strikethrough = self.strikethrough
-        self.__write__.underline = self.underline
-        temp = self.__write__.render(text, 1, color, highlight_color)
-        mid = surface_size(temp).with_mid(surface_size(self.__window__))
-        if pos.equals(Point._key()):
-            pos = mid
-        self.__window__.blit(temp, pos.tuple())
+    def full_render(self, text: str, color, pos: Point, highlighted: bool = False, highlight_color="white"):
+        if highlighted:
+            self.render(self.make_text_highlighted(text, color, highlight_color), pos)  
+        else:
+            self.render(self.make_text(text, color), pos)
         return self

@@ -7,7 +7,6 @@ class __GameState__:
     running: bool
 
 class GameStates(enum.Enum):
-    NOT_RUNNING = __GameState__(False, False)
     LAUNCHING = __GameState__(False, True)
     SETTINGS = __GameState__(True, True)
     MENU = __GameState__(True, True)

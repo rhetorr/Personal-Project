@@ -4,7 +4,6 @@ from util.mathextra.Location import Point
 from visuals import VisualsUtil
 from util.ImageHelpers import ImageHelpers
 from util.RectHelpers import RectHelpers
-from visuals.VisualsUtil import surface_size
 
 class Sprite(RectHelpers):
     def __init__(self, window:pygame.Surface, size: Point, *appear_states: GameStates):
@@ -16,7 +15,7 @@ class Sprite(RectHelpers):
         self.__saved_pos__ = Point.fill(0)
         self._shown_ = False
         self.__window__ = window
-        self.size.with_mid(surface_size(self.__window__))
+        self.size.with_mid(Point(self.__window__.get_width(), self.__window__.get_height()))
     def from_image(self, name):
         self.sprite = self.img_help.resize(self.img_help.get(name), self.size)
         return self
