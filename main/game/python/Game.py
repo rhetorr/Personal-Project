@@ -1,3 +1,5 @@
+import time
+import threading
 import pygame
 from GameStates import GameStates
 from util.MouseUtil import Mouse, ClickType
@@ -23,6 +25,15 @@ class Game(VisualsManager):
         self.clock = pygame.time.Clock() #game clock
         self.__running__ = False
         
+        self.previous_time = time.time()
+        
+    def log(self, interval: float):
+        while self.__running__:
+            if (time.time() - self.previous_time)*1000 < interval*1000:
+                continue
+            self.previous_time = time.time()
+            print(self.state)
+        
     def set_state(self, newState: GameStates) -> GameStates:
         old_state = self.state
         self.state = newState
@@ -33,6 +44,7 @@ class Game(VisualsManager):
                 if event.type == pygame.QUIT:
                     self.set_state(GameStates.QUITTING)
         if self.state == GameStates.QUITTING:
+            print(self.state) 
             self.__running__ = False
     
     def run(self): #main game loop
@@ -40,8 +52,12 @@ class Game(VisualsManager):
         player = Rocket(self._window_)
         dt_last_frame = 0.0
         
+        logger = threading.Thread(target=self.log, args=(1.0, ), daemon=True)
+        
         self.set_state(GameStates.LAUNCHING)
         self.mouse.update()
+        print(self.state)
+        logger.start()
         while self.__running__:
             
             match self.state:
