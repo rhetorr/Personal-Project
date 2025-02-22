@@ -1,5 +1,6 @@
 import pygame
 from GameStates import GameStates
+from util.MouseUtil import Mouse, ClickType
 from visuals.Button import Button
 from player.Rocket import Rocket
 from util.mathextra.Location import Point
@@ -9,7 +10,8 @@ from visuals import VisualsUtil
 from util.ImageHelpers import ImageHelpers
 
 class VisualsManager:
-    def __init__(self, resolution: tuple, caption: str, icon_filename: str):
+    def __init__(self, resolution: tuple, caption: str, icon_filename: str, mouse: Mouse):
+        self.mouse = mouse
         self.i_h = ImageHelpers(VisualsUtil._ASSETS_PATH)
         
         self._window_ = pygame.display.set_mode((resolution[0], resolution[1]), vsync=1) #creating window
@@ -41,11 +43,11 @@ class VisualsManager:
                 self.font.full_render("LOADING...", "black", Point._key())
             case GameStates.MENU:
                 self.icon_menu.at(Point(self._window_.get_width()/2-self.icon_menu.size.x/2, 0)).show().render()
-                self.play_button.at(Point(self._window_.get_width()/2-self.play_button.size.x/2, self._window_.get_height()/2-self.play_button.size.y/2 - 100)).show().render()
-                self.settings_button.at(Point(self._window_.get_width()/2-self.settings_button.size.x/2, self._window_.get_height()/2)).show().render()
-                self.quit_button.at(Point(self._window_.get_width()/2-self.quit_button.size.x/2, self._window_.get_height()/2-self.quit_button.size.y/2 + 200)).show().render()
+                self.play_button.at(Point(self._window_.get_width()/2-self.play_button.size.x/2, self._window_.get_height()/2-self.play_button.size.y/2 - 100)).show().render(self.mouse)
+                self.settings_button.at(Point(self._window_.get_width()/2-self.settings_button.size.x/2, self._window_.get_height()/2)).show().render(self.mouse)
+                self.quit_button.at(Point(self._window_.get_width()/2-self.quit_button.size.x/2, self._window_.get_height()/2-self.quit_button.size.y/2 + 200)).show().render(self.mouse)
             case GameStates.SETTINGS:
-                self.back_button.at(Point(0,0)).show().render()
+                self.back_button.at(Point(0,0)).show().render(self.mouse)
                 self.font.full_render("Settings", "black", Point._key())
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST:
                 player.show().render()

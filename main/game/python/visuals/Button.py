@@ -1,5 +1,6 @@
 import pygame
 from GameStates import GameStates
+from util.MouseUtil import ClickType, Mouse
 from visuals.Sprite import Sprite
 from util.TextHelpers import TextHelpers
 from util.mathextra.Location import Point
@@ -26,12 +27,12 @@ class Button(Sprite):
         self.border_size = size
         return self
 
-    def render(self, border: bool = True):
+    def render(self, mouse: Mouse, border: bool = True):
         # Draw the button border
         if border:
             pygame.draw.rect(self.__window__, "black", pygame.Rect(self.pos.x-self.border_size, self.pos.y-self.border_size, self.size.x+self.border_size*2, self.size.y+self.border_size*2))
         # Draw the button background
-        if self.is_hovering(Point.from_tuple(pygame.mouse.get_pos())):
+        if self.is_hovering(mouse.pos):
             bg = pygame.draw.rect(self.__window__, self.bg_hover, pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y))
         else:
             bg = pygame.draw.rect(self.__window__, self.bg_color, pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y))
@@ -44,8 +45,16 @@ class Button(Sprite):
     def is_hovering(self, mouse_pos: Point)-> bool:
         if self.pos.x <= mouse_pos.x <= self.pos.x + self.size.x and self.pos.y <= mouse_pos.y <= self.pos.y + self.size.y:
             return True
-    def is_clicked(self, mouse_pos: Point, mouse_click: bool)-> bool:
-        return self.is_hovering(mouse_pos) and mouse_click
+    def is_Lclicked(self, mouse: Mouse, type: ClickType = ClickType.RELEASED)-> bool:
+        return self.is_hovering(mouse.pos) and mouse.left_click.equals(type)
+    def is_Rclicked(self, mouse: Mouse, type: ClickType = ClickType.RELEASED)-> bool:
+        return self.is_hovering(mouse.pos) and mouse.right_click.equals(type)
+    def is_Mclicked(self, mouse: Mouse, type: ClickType = ClickType.RELEASED)-> bool:
+        return self.is_hovering(mouse.pos) and mouse.middle_click.equals(type)
     
-    def acted_on(self) -> bool:
-        return self.is_clicked(Point.from_tuple(pygame.mouse.get_pos()), pygame.mouse.get_pressed()[0])
+    def Lpressed(self, mouse: Mouse, type: ClickType = ClickType.HOLDING) -> bool:
+        return self.is_Lclicked(mouse, type=type)
+    def Rpressed(self, mouse: Mouse, type: ClickType = ClickType.HOLDING) -> bool:
+        return self.is_Rclicked(mouse, type=type)
+    def Mpressed(self, mouse: Mouse, type: ClickType = ClickType.HOLDING) -> bool:
+        return self.is_Mclicked(mouse, type=type)

@@ -1,5 +1,6 @@
 import pygame
 from GameStates import GameStates
+from util.MouseUtil import Mouse, ClickType
 from player.Rocket import Rocket
 from util.mathextra.Location import Point
 from visuals.Sprite import Sprite
@@ -16,7 +17,7 @@ pygame.font.init()
 
 class Game(VisualsManager):
     def __init__(self, caption: str, fps):
-        super().__init__((1200,1000), caption, "LOGO.png")
+        super().__init__((1200,1000), caption, "LOGO.png", Mouse())
         self.state = GameStates.LAUNCHING
         self.fps = fps
         self.clock = pygame.time.Clock() #game clock
@@ -40,26 +41,28 @@ class Game(VisualsManager):
         dt_last_frame = 0.0
         
         self.set_state(GameStates.LAUNCHING)
+        self.mouse.update()
         while self.__running__:
             
             match self.state:
                 case GameStates.LAUNCHING: #reset all values for game start
                     self.set_state(GameStates.MENU)
                 case GameStates.MENU:
-                    if self.play_button.acted_on():
+                    if self.play_button.Lpressed(self.mouse):
                         self.set_state(GameStates.STARTING)
-                    if self.settings_button.acted_on():
+                    if self.settings_button.Lpressed(self.mouse):
                         self.set_state(GameStates.SETTINGS)
-                    if self.quit_button.acted_on():
+                    if self.quit_button.Lpressed(self.mouse):
                         self.set_state(GameStates.QUITTING)
                 case GameStates.SETTINGS: #settings logic
-                    if self.back_button.acted_on():
+                    if self.back_button.Lpressed(self.mouse):
                         self.set_state(GameStates.MENU)
                 case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST: #game logic
                     player.update(self.state)
                 case GameStates.QUITTING: #final actions before closings
                     player.at(Point.fill(0)).hide()
             self.graphics(self.state, player)
+            self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
             self.quit_request()
         pygame.quit()
