@@ -11,6 +11,7 @@ from util.RectHelpers import RectHelpers
 from visuals import VisualsUtil
 from visuals.VisualsManager import VisualsManager
 from util.TextHelpers import TextHelpers
+import Settings
 
 # Game about a rocket that gets as far as possible dodging asteroids and collecting fuel
 pygame.init()
@@ -91,5 +92,6 @@ class Game(VisualsManager):
             self.quit_request()
         logger.join()
         pygame.quit()
+        Settings.save_settings(self.config_settings)
     
 Game("game", 60).run()

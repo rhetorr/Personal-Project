@@ -9,20 +9,21 @@ from util.TextHelpers import TextHelpers
 from .Sprite import Sprite
 from visuals import VisualsUtil
 from util.ImageHelpers import ImageHelpers
+import Settings
+from screeninfo import get_monitors
 
 class VisualsManager:
-    def __init__(self, resolution: tuple, caption: str, icon_filename: str, mouse: Mouse):
+    def __init__(self, resolution, caption: str, icon_filename: str, mouse: Mouse):
+        self.config_settings = Settings.get_config_dict()
+        
         self.mouse = mouse
         self.i_h = ImageHelpers(VisualsUtil._ASSETS_PATH)
         
-        self._window_ = pygame.display.set_mode((resolution[0], resolution[1]), vsync=1) #creating window
+        self._window_ = pygame.display.set_mode((get_monitors()[self.config_settings["main_monitor"]].width,get_monitors()[self.config_settings["main_monitor"]].height) if self.config_settings["fullscreen"] else resolution, vsync=1) #creating window
         pygame.display.set_caption(caption)
         self.icon = Sprite(self._window_, Point.fill(100)).with_image(icon_filename)
         pygame.display.set_icon(self.icon.sprite)
         
-        self.config_settings = {
-            "fullscreen": False
-        }
         
         self.font = TextHelpers(self._window_, "arial", 20)
         self.settings_font = TextHelpers(self._window_, "times new roman", 40)

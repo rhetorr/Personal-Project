@@ -1,0 +1,1 @@
+{'main_monitor': 0, 'fullscreen': False}
