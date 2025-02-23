@@ -1,7 +1,7 @@
 #write in files with a format, for saveable progress
 import os
 
-def __delete_until(string: str, substring: str):
+def delete_until(string: str, substring: str):
     list = string.split(substring)
     new = ""
     for i in list:
@@ -11,37 +11,47 @@ def __delete_until(string: str, substring: str):
     return new
 
 class File:
-    def __init__(self, file_name: str):
-        pack = __delete_until(__file__, '\\')
+    def __init__(self):
+        pack = delete_until(__file__, '\\')
+        self.__file_path = pack
+        self.__file_name = ""
         
-        self.file_name = file_name
-        self.__file_path =  pack + file_name
-        
-    def withPath(self,directory):
-        self.__file_path = directory + self.file_name
+    def make(self, file_name: str):
+        self.__file_name = file_name
+        file = os.path.join(self.__file_path, self.__file_name)
+        if os.path.exists(file):
+            return
+        open(file, 'w').close()
         return self
-    
-    def make(self):
-        self.file_name += '.txt'
-        self.__file_path += '.txt'
-        self.__file_descriptor = os.open(self.__file_path, os.O_CREAT)
-        os.close(self.__file_descriptor)
+
+    def delete_file_text(self):
+        file = os.path.join(self.__file_path, self.__file_name)
+        with open(file, 'w') as f:
+            f.write("")
+        return self
+            
+    def append(self, text: list[str]):
+        file = os.path.join(self.__file_path, self.__file_name)
+        with open(file, 'a') as f:
+            for i in text:
+                f.write(i)
+                if not i == text[-1]:
+                    f.write("\n")
         return self
 
     def write(self, text: list[str]):
-        os.open(self.__file_path, os.O_RDWR)
-        for txt in text:
-            line = str.encode(txt + "\n")
-            
-            os.write(self.__file_descriptor, line)
-            
-    def close(self):
-        os.close(self.__file_descriptor)
+        self.delete_file_text()
+        self.append(text)
         return self
+    
+    def read(self):
+        file = os.path.join(self.__file_path, self.__file_name)
+        with open(file, 'r') as f:
+            return f.read()
         
 class Folder:
     def __init__(self, folder_name: str):
-        pack = __delete_until(__file__, '\\')
+        pack = delete_until(__file__, '\\')
         
         self.folder_name = folder_name
         self.__folder_path = pack
@@ -56,3 +66,22 @@ class Folder:
     def withPath(self, path):
         self.__folder_path = path
         return self
+    
+class Map:
+    def __init__(self, *chars: tuple[object, object]):
+        self.chars = chars
+        
+    def add(self, *chars: tuple[object, object]):
+        self.chars = self.chars + chars
+        
+    def get(self, input: object):
+        for i in self.chars:
+            if i[0] == input:
+                return i[1]
+        return None
+    
+    def get_char(self, input: object):
+        for i in self.chars:
+            if i[1] == input:
+                return i[0]
+        return None
