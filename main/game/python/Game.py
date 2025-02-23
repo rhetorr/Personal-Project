@@ -79,6 +79,8 @@ class Game(VisualsManager):
                 case GameStates.SETTINGS: #settings logic
                     if self.back_button.Lpressed(self.mouse):
                         self.set_state(GameStates.MENU)
+                    elif self.fullscreen_button.Lpressed(self.mouse):
+                        self.config_settings["fullscreen"] = not self.config_settings["fullscreen"]
                 case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST: #game logic
                     player.update(self.state)
                 case GameStates.QUITTING: #final actions before closings
