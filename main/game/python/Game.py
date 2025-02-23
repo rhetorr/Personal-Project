@@ -25,14 +25,15 @@ class Game(VisualsManager):
         self.clock = pygame.time.Clock() #game clock
         self.__running__ = False
         
-        self.previous_time = time.time()
-        
     def log(self, interval: float):
+        previous_time = time.time()
+        print(self.state)
         while self.__running__:
-            if (time.time() - self.previous_time)*1000 < interval*1000:
+            if (time.time() - previous_time)*1000 < interval*1000:
                 continue
-            self.previous_time = time.time()
+            previous_time = time.time()
             print(self.state)
+        print(self.state)
         
     def set_state(self, newState: GameStates) -> GameStates:
         old_state = self.state
@@ -44,7 +45,6 @@ class Game(VisualsManager):
                 if event.type == pygame.QUIT:
                     self.set_state(GameStates.QUITTING)
         if self.state == GameStates.QUITTING:
-            print(self.state) 
             self.__running__ = False
     
     def run(self): #main game loop
@@ -56,7 +56,6 @@ class Game(VisualsManager):
         
         self.set_state(GameStates.LAUNCHING)
         self.mouse.update()
-        print(self.state)
         logger.start()
         while self.__running__:
             
@@ -66,9 +65,9 @@ class Game(VisualsManager):
                 case GameStates.MENU:
                     if self.play_button.Lpressed(self.mouse):
                         self.set_state(GameStates.STARTING)
-                    if self.settings_button.Lpressed(self.mouse):
+                    elif self.settings_button.Lpressed(self.mouse):
                         self.set_state(GameStates.SETTINGS)
-                    if self.quit_button.Lpressed(self.mouse):
+                    elif self.quit_button.Lpressed(self.mouse):
                         self.set_state(GameStates.QUITTING)
                 case GameStates.SETTINGS: #settings logic
                     if self.back_button.Lpressed(self.mouse):
@@ -81,6 +80,7 @@ class Game(VisualsManager):
             self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
             self.quit_request()
+        logger.join()
         pygame.quit()
     
 Game("game", 60.0).run()
