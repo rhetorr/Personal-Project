@@ -25,15 +25,20 @@ class Game(VisualsManager):
         self.clock = pygame.time.Clock() #game clock
         self.__running__ = False
         
+        self.logging_items = [self.state.name]
+        
     def log(self, interval: float):
         previous_time = time.time()
-        print(self.state)
+        print(self.logging_items)
         while self.__running__:
             if (time.time() - previous_time)*1000 < interval*1000:
                 continue
             previous_time = time.time()
-            print(self.state)
-        print(self.state)
+            print(self.logging_items)
+        print(self.logging_items)
+        
+    def use_logs(self, items: list):
+        self.logging_items = items
         
     def set_state(self, newState: GameStates) -> GameStates:
         old_state = self.state
@@ -59,6 +64,7 @@ class Game(VisualsManager):
         self.mouse.update()
         
         while self.__running__:
+            self.use_logs([self.state.name])
             
             match self.state:
                 case GameStates.LAUNCHING: #reset all values for game start
