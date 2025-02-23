@@ -6,10 +6,9 @@ from util.ImageHelpers import ImageHelpers
 from util.RectHelpers import RectHelpers
 
 class Sprite(RectHelpers):
-    def __init__(self, window:pygame.Surface, size: Point, *appear_states: GameStates):
+    def __init__(self, window:pygame.Surface, size: Point):
         super().__init__(size.negate().minus(Point.fill(100)), size)
         super().__delattr__("__rect_value__")
-        self.appear_states = appear_states
         self.sprite = pygame.surface.Surface(size.tuple())
         self.img_help = ImageHelpers(VisualsUtil._ASSETS_PATH)
         self.__saved_pos__ = Point.fill(0)
@@ -36,11 +35,3 @@ class Sprite(RectHelpers):
         else:
             self.__saved_pos__ = pos
         return self
-    
-    
-    def check_appear(self, *state: GameStates)->bool:
-        for j in state:
-            for i in self.appear_states:
-                if i == state:
-                    return True
-        return False

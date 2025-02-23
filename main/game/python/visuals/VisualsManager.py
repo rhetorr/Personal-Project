@@ -16,13 +16,13 @@ class VisualsManager:
         
         self._window_ = pygame.display.set_mode((resolution[0], resolution[1]), vsync=1) #creating window
         pygame.display.set_caption(caption)
-        self.icon = Sprite(self._window_, Point.fill(100), GameStates.MENU).from_image(icon_filename)
+        self.icon = Sprite(self._window_, Point.fill(100)).from_image(icon_filename)
         pygame.display.set_icon(self.icon.sprite)
         self.font = TextHelpers(self._window_, "arial", 20)
         
         self.back_button = Button(self._window_, Point(0, 0), Point(250, 75), "Back", 30, bg_hover="red")
         
-        self.icon_menu = Sprite(self._window_, Point.fill(225), GameStates.MENU).from_image(icon_filename)
+        self.icon_menu = Sprite(self._window_, Point.fill(225)).from_image(icon_filename)
         self.play_button = Button(self._window_, Point(0, 0), Point(250, 75), "Play", 30, "sky blue", "blue")
         self.settings_button = Button(self._window_, Point(0, 0), Point(250, 75), "Settings", 30)
         self.quit_button = Button(self._window_, Point(0, 0), Point(250, 75), "Quit", 30, bg_hover="red")
@@ -47,8 +47,7 @@ class VisualsManager:
                 self.settings_button.at(Point(self._window_.get_width()/2-self.settings_button.size.x/2, self._window_.get_height()/2)).show().render(self.mouse)
                 self.quit_button.at(Point(self._window_.get_width()/2-self.quit_button.size.x/2, self._window_.get_height()/2-self.quit_button.size.y/2 + 200)).show().render(self.mouse)
             case GameStates.SETTINGS:
-                self.back_button.at(Point(0,0)).show().render(self.mouse)
-                self.font.full_render("Settings", "black", Point._key())
+                self.back_button.at(Point(10,10)).show().render(self.mouse)
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST:
                 player.show().render()
                 self.font.full_render("wip", "black", Point._key())

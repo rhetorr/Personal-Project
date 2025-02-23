@@ -6,9 +6,9 @@ from GameStates import GameStates
 
 class Rocket(Sprite):
     def __init__(self, window: pygame.Surface):
-        super().__init__(window, Point.fill(75), GameStates.PLAYING, GameStates.LOST, GameStates.STARTING)
+        super().__init__(window, Point.fill(75))
         self.from_image("rocket.png")
-        
+        self.appear_states = (GameStates.PLAYING, GameStates.LOST, GameStates.STARTING)
     def update(self, state: GameStates):
         for i in self.appear_states:
             if i == state:
