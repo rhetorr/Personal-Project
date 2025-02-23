@@ -18,7 +18,7 @@ pygame.display.init()
 pygame.font.init()
 
 class Game(VisualsManager):
-    def __init__(self, caption: str, fps):
+    def __init__(self, caption: str, fps: int):
         super().__init__((1200,1000), caption, "LOGO.png", Mouse())
         self.state = GameStates.LAUNCHING
         self.fps = fps
@@ -55,8 +55,9 @@ class Game(VisualsManager):
         logger = threading.Thread(target=self.log, args=(1.0, ), daemon=True)
         
         self.set_state(GameStates.LAUNCHING)
-        self.mouse.update()
         logger.start()
+        self.mouse.update()
+        
         while self.__running__:
             
             match self.state:
@@ -83,4 +84,4 @@ class Game(VisualsManager):
         logger.join()
         pygame.quit()
     
-Game("game", 60.0).run()
+Game("game", 60).run()

@@ -1,13 +1,14 @@
 import enum
+import time
 import pygame
 
 from util.mathextra.Location import Point
 
 class ClickType(enum.Enum):
-    IDLE = False
-    PRESSED = True
-    HOLDING = True
-    RELEASED = False
+    IDLE = 0
+    PRESSED = 1
+    HOLDING = 2
+    RELEASED = 3
     
     def equals(self, other: 'ClickType') -> bool:
         if not isinstance(other, ClickType):
@@ -36,32 +37,39 @@ class Mouse:
         self.__right_history__[0] = self._get_right_click_()
         self.__middle_history__[0] = self._get_middle_click_()
         
-        if not self.__left_history__[0] and not self.__left_history__[1]:
+        if self.left(False, False):
             self.left_click = ClickType.IDLE
-        elif not self.__left_history__[0] and self.__left_history__[1]:
+        elif self.left(False, True):
             self.left_click = ClickType.PRESSED
-        elif self.__left_history__[0] and self.__left_history__[1]:
+        elif self.left(True, True):
             self.left_click = ClickType.HOLDING
-        elif self.__left_history__[0] and not self.__left_history__[1]:
+        elif self.left(True, False):
             self.left_click = ClickType.RELEASED
             
-        if not self.__right_history__[0] and not self.__right_history__[1]:
+        if self.right(False, False):
             self.right_click = ClickType.IDLE
-        elif not self.__right_history__[0] and self.__right_history__[1]:
+        elif self.right(False, True):
             self.right_click = ClickType.PRESSED
-        elif self.__right_history__[0] and self.__right_history__[1]:
+        elif self.right(True, True):
             self.right_click = ClickType.HOLDING
-        elif self.__right_history__[0] and not self.__right_history__[1]:
+        elif self.right(True, False):
             self.right_click = ClickType.RELEASED
             
-        if not self.__middle_history__[0] and not self.__middle_history__[1]:
+        if self.middle(False, False):
             self.middle_click = ClickType.IDLE
-        elif not self.__middle_history__[0] and self.__middle_history__[1]:
+        elif self.middle(False, True):
             self.middle_click = ClickType.PRESSED
-        elif self.__middle_history__[0] and self.__middle_history__[1]:
+        elif self.middle(True, True):
             self.middle_click = ClickType.HOLDING
-        elif self.__middle_history__[0] and not self.__middle_history__[1]:
+        elif self.middle(True, False):
             self.middle_click = ClickType.RELEASED
+    
+    def left(self, a:bool, b:bool) -> bool:
+        return self.__left_history__[0]==a and self.__left_history__[1]==b
+    def right(self, a:bool, b:bool) -> bool:
+        return self.__right_history__[0]==a and self.__right_history__[1]==b
+    def middle(self, a:bool, b:bool) -> bool:
+        return self.__middle_history__[0]==a and self.__middle_history__[1]==b
     
     def _get_pos_(self):
         return Point.from_tuple(pygame.mouse.get_pos())

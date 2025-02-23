@@ -52,9 +52,9 @@ class Button(Sprite):
     def is_Mclicked(self, mouse: Mouse, type: ClickType = ClickType.RELEASED)-> bool:
         return self.is_hovering(mouse.pos) and mouse.middle_click.equals(type)
     
-    def Lpressed(self, mouse: Mouse, type: ClickType = ClickType.HOLDING) -> bool:
+    def Lpressed(self, mouse: Mouse, type: ClickType = ClickType.RELEASED) -> bool:
         return self.is_Lclicked(mouse, type=type)
-    def Rpressed(self, mouse: Mouse, type: ClickType = ClickType.HOLDING) -> bool:
+    def Rpressed(self, mouse: Mouse, type: ClickType = ClickType.RELEASED) -> bool:
         return self.is_Rclicked(mouse, type=type)
-    def Mpressed(self, mouse: Mouse, type: ClickType = ClickType.HOLDING) -> bool:
+    def Mpressed(self, mouse: Mouse, type: ClickType = ClickType.RELEASED) -> bool:
         return self.is_Mclicked(mouse, type=type)
