@@ -10,13 +10,13 @@ class Sprite(RectHelpers):
         super().__init__(size.negate().minus(Point.fill(100)), size)
         super().__delattr__("__rect_value__")
         self.sprite = pygame.surface.Surface(size.tuple())
-        self.img_help = ImageHelpers(VisualsUtil._ASSETS_PATH)
+        self.i_h = ImageHelpers(VisualsUtil._ASSETS_PATH)
         self.__saved_pos__ = Point.fill(0)
         self._shown_ = False
         self.__window__ = window
         self.size.with_mid(Point(self.__window__.get_width(), self.__window__.get_height()))
-    def from_image(self, name):
-        self.sprite = self.img_help.resize(self.img_help.get(name), self.size)
+    def with_image(self, name):
+        self.sprite = self.i_h.resize(self.i_h.get(name), self.size)
         return self
     def render(self):
         self.__window__.blit(self.sprite, self.pos.tuple())

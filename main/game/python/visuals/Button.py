@@ -15,9 +15,17 @@ class Button(Sprite):
         self.font_size = font_size
         self.font = font
         self.border_size = 2
+        
+        self.use_text = True
+        
+    def with_image(self, filename: str):
+        self.sprite = self.i_h.resize(self.i_h.get(filename), self.size.div_by(2))
+        self.use_text = False
+        return self
     
     def with_text(self, text: str):
         self.text = text
+        self.use_text = True
         return self
     def with_screen(self, screen: pygame.Surface):
         self.__window__ = screen
@@ -37,10 +45,13 @@ class Button(Sprite):
         else:
             bg = pygame.draw.rect(self.__window__, self.bg_color, pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y))
         
-        # Draw the button text
-        writer = TextHelpers(self.__window__, self.font, self.font_size)
-        txt = writer.make_text(self.text, "black")
-        writer.render(txt, Point(self.pos.x + self.size.x/2 - txt.get_width()/2, self.pos.y + self.size.y/2 - txt.get_height()/2))
+        # Draw the button text/image
+        if self.use_text:
+            writer = TextHelpers(self.__window__, self.font, self.font_size)
+            txt = writer.make_text(self.text, "black")
+            writer.render(txt, Point(self.pos.x + self.size.x/2 - txt.get_width()/2, self.pos.y + self.size.y/2 - txt.get_height()/2))
+        else:
+            self.__window__.blit(self.sprite, Point(self.pos.x + self.size.x/2 - self.sprite.get_width()/2, self.pos.y + self.size.y/2 - self.sprite.get_height()/2).tuple())
 
     def is_hovering(self, mouse_pos: Point)-> bool:
         if self.pos.x <= mouse_pos.x <= self.pos.x + self.size.x and self.pos.y <= mouse_pos.y <= self.pos.y + self.size.y:
