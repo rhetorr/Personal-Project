@@ -12,7 +12,7 @@ _EMPTY_SETTINGS = {
 _SETTINGS_PATH = 'C:/Users/' + _USER + '/AppData/Local/PersonalProject/' + _SETTINGS_FILE_NAME
 
 def player_speed(res_scalar: Point):
-    return res_scalar.times(Point.fill(5))
+    return res_scalar.times(Point.fill(64)) # REMEMBER IT IS PX/S
 
 def save_settings(settings: dict):
     file = File()
