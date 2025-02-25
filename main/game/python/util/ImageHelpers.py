@@ -1,6 +1,6 @@
 import pygame
 
-from util.mathextra.Location import Point
+from util.mathextra.Location import Angle, Point
 
 class ImageHelpers():
     def __init__(self, path: str):
@@ -13,3 +13,5 @@ class ImageHelpers():
         return pygame.transform.scale_by(surface, scalar)
     def scale(self, surface: pygame.Surface, scalars: Point):
         return self.resize(surface, Point(surface.get_width(), surface.get_height()).times(scalars))
+    def rotate(self, surface: pygame.Surface, angle: Angle):
+        return pygame.transform.rotate(surface, angle.deg)
