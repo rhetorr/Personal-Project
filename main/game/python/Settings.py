@@ -1,3 +1,4 @@
+from util.mathextra.Location import Point
 from util.FileWriter import File
 import getpass
 
@@ -10,7 +11,8 @@ _EMPTY_SETTINGS = {
     }
 _SETTINGS_PATH = 'C:/Users/' + _USER + '/AppData/Local/PersonalProject/' + _SETTINGS_FILE_NAME
 
-_PLAYER_SPEED: float = 5
+def player_speed(res_scalar: Point):
+    return res_scalar.times(Point.fill(5))
 
 def save_settings(settings: dict):
     file = File()

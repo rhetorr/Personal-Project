@@ -99,13 +99,13 @@ class Game(VisualsManager):
                         just_starting = False
                 case GameStates.PLAYING: #gameplay logic
                     if keys[pygame.K_w]:
-                        player.at(Point(player.pos.x, player.pos.y - Settings._PLAYER_SPEED))
+                        player.move_y(-Settings.player_speed(self.res_scalar).y)
                     elif keys[pygame.K_s]:
-                        player.at(Point(player.pos.x, player.pos.y + Settings._PLAYER_SPEED))
+                        player.move_y(Settings.player_speed(self.res_scalar).y)
                     if keys[pygame.K_d]:
-                        player.at(Point(player.pos.x + Settings._PLAYER_SPEED, player.pos.y))
+                        player.move_x(Settings.player_speed(self.res_scalar).x)
                     elif keys[pygame.K_a]:
-                        player.at(Point(player.pos.x - Settings._PLAYER_SPEED, player.pos.y))
+                        player.move_x(-Settings.player_speed(self.res_scalar).x)
                 case GameStates.LOST: #lost, ready to go back to menu
                     player.at(player.pos.get_point())
                 case GameStates.QUITTING: #final actions before closings

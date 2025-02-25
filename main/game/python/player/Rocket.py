@@ -20,6 +20,15 @@ class Rocket():
     def at(self, pos: Point):
         self.pos = Orientation.init(pos, self.pos.angle)
         return self
+    def move_x(self, amount: float):
+        self.pos.x += amount
+        return self
+    def move_y(self, amount: float):
+        self.pos.y += amount
+        return self
+    def move(self, amount: Point):
+        self.pos = self.pos.translate_by(amount)
+        return self
     def face(self, angle: Angle):
         self.pos.angle = angle
         return self
