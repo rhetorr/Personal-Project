@@ -52,7 +52,7 @@ class VisualsManager:
         pygame.draw.line(self._window_, "black", (self._window_.get_width()/2, 0), (self._window_.get_width()/2, self._window_.get_height()))
         pygame.draw.line(self._window_, "black", (0, self._window_.get_height()/2), (self._window_.get_width(), self._window_.get_height()/2))
     
-    def graphics(self, state: GameStates, player: Rocket):
+    def graphics(self, state: GameStates, player: Rocket, timer):
         self._window_.fill("white")
         
         self.icon_menu.hide()
@@ -62,6 +62,7 @@ class VisualsManager:
         
         self.back_button.hide()
         self.fullscreen_button.hide()
+        
         match state:
             case GameStates.LAUNCHING:
                 self.font.full_render("LOADING...", "black", Point._key())
@@ -83,7 +84,8 @@ class VisualsManager:
                 
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST:
                 player.render()
-                self.font.full_render("wip", "black", Point._key())
+                t = self.font.make_text(str(timer), "black")
+                self.font.render(t, Point(0, self._window_.get_height()-t.get_height()))
             case GameStates.QUITTING:
                 self.font.full_render("QUITTING...", "black", Point._key())
         pygame.display.update()

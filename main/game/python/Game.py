@@ -110,7 +110,8 @@ class Game(VisualsManager):
                     player.at(player.pos.get_point())
                 case GameStates.QUITTING: #final actions before closings
                     player.at(Point.fill(0))
-            self.graphics(self.state, player)
+            game_time = round(time.time() - game_start_time, ndigits=1)
+            self.graphics(self.state, player, game_time)
             self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
             self.quit_request()
