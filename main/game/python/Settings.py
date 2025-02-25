@@ -10,6 +10,8 @@ _EMPTY_SETTINGS = {
     }
 _SETTINGS_PATH = 'C:/Users/' + _USER + '/AppData/Local/PersonalProject/' + _SETTINGS_FILE_NAME
 
+_PLAYER_SPEED: float = 5
+
 def save_settings(settings: dict):
     file = File()
     file.make(_SETTINGS_FILE_NAME)

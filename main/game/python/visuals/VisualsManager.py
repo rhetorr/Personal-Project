@@ -62,8 +62,6 @@ class VisualsManager:
         
         self.back_button.hide()
         self.fullscreen_button.hide()
-        
-        player.hide()
         match state:
             case GameStates.LAUNCHING:
                 self.font.full_render("LOADING...", "black", Point._key())
@@ -84,7 +82,7 @@ class VisualsManager:
                 self.fullscreen_button.at(Point(self.txt_fullscreen.get_width()/2-self.fullscreen_button.size.x/2,self.txt_fullscreen.get_height()).plus(Point(125,25).times(self.res_scalar))).show().render(self.mouse)
                 
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST:
-                player.show().render()
+                player.render()
                 self.font.full_render("wip", "black", Point._key())
             case GameStates.QUITTING:
                 self.font.full_render("QUITTING...", "black", Point._key())

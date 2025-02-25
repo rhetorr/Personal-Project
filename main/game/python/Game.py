@@ -55,16 +55,23 @@ class Game(VisualsManager):
     
     def run(self): #main game loop
         self.__running__ = True
-        player = Rocket(self._window_)
+        player = Rocket(self._window_, Point.fill(64), self.res_scalar)
         dt_last_frame = 0.0
         
-        logger = threading.Thread(target=self.log, args=(1.0, ), daemon=True)
+        logger = threading.Thread(target=self.log, args=(0.5, ), daemon=True)
+        
+        just_starting = False
+        game_start_time = time.time()
+        starting_intermission = 1.0
+        
+        keys = pygame.key.get_pressed()
         
         self.set_state(GameStates.LAUNCHING)
         logger.start()
         self.mouse.update()
         
         while self.__running__:
+            keys = pygame.key.get_pressed()
             self.use_logs([self.state.name])
             
             match self.state:
@@ -82,10 +89,27 @@ class Game(VisualsManager):
                         self.set_state(GameStates.MENU)
                     elif self.fullscreen_button.Lpressed(self.mouse):
                         self.config_settings["fullscreen"] = not self.config_settings["fullscreen"]
-                case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST: #game logic
-                    player.update(self.state)
+                case GameStates.STARTING: #reset all values for game start
+                    if not just_starting:
+                        just_starting = True
+                        game_start_time = time.time()
+                    player.at(Point(self._window_.get_width()/2 - player.size.x/2, self._window_.get_height() - player.size.y))
+                    if time.time() - game_start_time > starting_intermission:
+                        self.set_state(GameStates.PLAYING)
+                        just_starting = False
+                case GameStates.PLAYING: #gameplay logic
+                    if keys[pygame.K_w]:
+                        player.at(Point(player.pos.x, player.pos.y - Settings._PLAYER_SPEED))
+                    elif keys[pygame.K_s]:
+                        player.at(Point(player.pos.x, player.pos.y + Settings._PLAYER_SPEED))
+                    if keys[pygame.K_d]:
+                        player.at(Point(player.pos.x + Settings._PLAYER_SPEED, player.pos.y))
+                    elif keys[pygame.K_a]:
+                        player.at(Point(player.pos.x - Settings._PLAYER_SPEED, player.pos.y))
+                case GameStates.LOST: #lost, ready to go back to menu
+                    player.at(player.pos.get_point())
                 case GameStates.QUITTING: #final actions before closings
-                    player.at(Point.fill(0)).hide()
+                    player.at(Point.fill(0))
             self.graphics(self.state, player)
             self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
