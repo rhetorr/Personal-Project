@@ -1,1 +1,1 @@
-{'main_monitor': 0, 'fullscreen': False}
+{'main_monitor': 0, 'fullscreen': False, 'fuel_usage': 0.03333333333333333, 'best_time': 8.7}

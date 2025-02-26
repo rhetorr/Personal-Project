@@ -3,7 +3,7 @@ import threading
 import pygame
 from GameStates import GameStates
 from util.MouseUtil import Mouse, ClickType
-from player.Rocket import Rocket
+from entities.Rocket import Rocket
 from util.mathextra.Location import Point
 from visuals.Sprite import Sprite
 from util.ImageHelpers import ImageHelpers
@@ -55,11 +55,12 @@ class Game(VisualsManager):
     
     def run(self): #main game loop
         self.__running__ = True
-        player = Rocket(self._window_, Point.fill(64), self.res_scalar)
+        player = Rocket(self._window_, Point.fill(64), self.res_scalar, self.config_settings["fuel_usage"])
         dt_last_frame = 0.0
         player_bounds = Point(self._window_.get_width()-player.size.x, self._window_.get_height()-player.size.y)
         player_vel = Point(0,0)
         lookahead_player = player.pos.get_point()
+        player_speed = Settings.player_speed(self.res_scalar)
         
         logger = threading.Thread(target=self.log, args=(0.5, ), daemon=True)
         
@@ -104,6 +105,7 @@ class Game(VisualsManager):
                         just_starting = True
                         game_start_time = time.time()
                         time_paused = 0
+                        player.fuel = 100
                         player.at(Point(self._window_.get_width()/2 - player.size.x/2, self._window_.get_height() - player.size.y - 8))
                     if time.time() - game_start_time > starting_intermission:
                         self.set_state(GameStates.PLAYING)
@@ -113,20 +115,27 @@ class Game(VisualsManager):
                         if time_since_esc > 0.2:
                             time_since_esc = 0
                             self.set_state(GameStates.PAUSED)
+                    elif player.fuel <= 0:
+                        player.fuel = 0
+                        self.set_state(GameStates.LOST)
                     else:
                         game_time = round(time.time() - game_start_time - time_paused, ndigits=1)
+                        if game_time >= self.config_settings["best_time"]:
+                            self.config_settings["best_time"] = game_time
+                            
                         if keys[pygame.K_w] and within_window_y:
-                            player_vel.y = -Settings.player_speed(self.res_scalar).y * dt_last_frame
+                            player_vel.y = -player_speed.y * dt_last_frame
                         elif keys[pygame.K_s] and within_window_y:
-                            player_vel.y = Settings.player_speed(self.res_scalar).y * dt_last_frame
+                            player_vel.y = player_speed.y * dt_last_frame
                         else:
                             player_vel.y = 0
                         if keys[pygame.K_d] and within_window_x:
-                            player_vel.x = Settings.player_speed(self.res_scalar).x * dt_last_frame
+                            player_vel.x = player_speed.x * dt_last_frame
                         elif keys[pygame.K_a] and within_window_x:
-                            player_vel.x = -Settings.player_speed(self.res_scalar).x * dt_last_frame
+                            player_vel.x = -player_speed.x * dt_last_frame
                         else:
                             player_vel.x = 0
+                            
                         lookahead_player = player.pos.get_point().plus(player_vel)
                         within_window_x = 0 < lookahead_player.x and lookahead_player.x < player_bounds.x
                         within_window_y = 0 < lookahead_player.y and lookahead_player.y < player_bounds.y
@@ -134,6 +143,9 @@ class Game(VisualsManager):
                             player.move_x(player_vel.x)
                         if within_window_y:
                             player.move_y(player_vel.y)
+                            
+                        temp = (0.25) if (player_vel.norm() == 0) else (player_vel.norm()/(player_speed.x*dt_last_frame))
+                        player.fuel -= player.fuel_usage * temp
                     time_since_esc += dt_last_frame
                 case GameStates.PAUSED:
                     time_paused += dt_last_frame
@@ -146,6 +158,8 @@ class Game(VisualsManager):
                     time_since_esc += dt_last_frame
                 case GameStates.LOST: #lost, ready to go back to menu
                     player.at(player.pos.get_point())
+                    if self.menu_button.Lpressed(self.mouse):
+                        self.set_state(GameStates.MENU)
                 case GameStates.QUITTING: #final actions before closings
                     player.at(Point.fill(0))
             self.graphics(self.state, player, game_time)

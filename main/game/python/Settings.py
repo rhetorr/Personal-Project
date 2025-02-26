@@ -7,7 +7,9 @@ _USER = getpass.getuser()
 _SETTINGS_FILE_NAME = "settings.txt"
 _EMPTY_SETTINGS = {
     "main_monitor": 0,
-    "fullscreen": False
+    "fullscreen": False,
+    "fuel_usage": 2/60, # per second per frame
+    "best_time": 0.0
     }
 _SETTINGS_PATH = 'C:/Users/' + _USER + '/AppData/Local/PersonalProject/' + _SETTINGS_FILE_NAME
 

@@ -4,7 +4,7 @@ from visuals import VisualsUtil
 from util.ImageHelpers import ImageHelpers
 
 class Rocket():
-    def __init__(self, window:pygame.Surface, size: Point, res_scalar: Point):
+    def __init__(self, window:pygame.Surface, size: Point, res_scalar: Point, fuel_usage: float):
         self.size = size.times(res_scalar)
         self.__window__ = window
         self.i_h = ImageHelpers(VisualsUtil._ASSETS_PATH)
@@ -13,6 +13,8 @@ class Rocket():
         self.__rocket_angle__ = Angle.in_degrees(0)
         
         self.pos: Orientation = Orientation.init(size.negate().minus(Point.fill(100)), Angle.in_degrees(0))
+        self.fuel = 100
+        self.fuel_usage = fuel_usage 
     def render(self):
         self.rocket = self.i_h.rotate(self.rocket, self.pos.angle.minus(self.__rocket_angle__))
         self.__rocket_angle__ = self.pos.angle
@@ -32,3 +34,5 @@ class Rocket():
     def face(self, angle: Angle):
         self.pos.angle = angle
         return self
+    def fuel_up(self, amount: float):
+        self.fuel += amount

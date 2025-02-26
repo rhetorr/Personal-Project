@@ -3,7 +3,7 @@ from GameStates import GameStates
 from util.RectHelpers import RectHelpers
 from util.MouseUtil import Mouse, ClickType
 from visuals.Button import Button
-from player.Rocket import Rocket
+from entities.Rocket import Rocket
 from util.mathextra.Location import Angle, Point
 from util.TextHelpers import TextHelpers
 from .Sprite import Sprite
@@ -91,12 +91,17 @@ class VisualsManager:
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST | GameStates.PAUSED:
                 self.space_bg.show().at(Point.fill(0)).render()
                 player.render()
-                t = self.font.make_text(str(timer), "white")
-                self.font.render(t, Point(0, self._window_.get_height()-t.get_height()))
+                t = self.font.make_text_highlighted("time: " + str(timer), "white", "black")
+                self.font.full_render("fuel: " + str(round(player.fuel, ndigits=2)) + "%", "white", Point(0, self._window_.get_height()-(t.get_height()*1) ))
+                self.font.full_render("best time: " + str(self.config_settings["best_time"]), "white", Point(0, self._window_.get_height()-(t.get_height()*2) ))
+                self.font.render(t, Point(0, self._window_.get_height()-(t.get_height()*3) ))
                 
                 if state == GameStates.PAUSED:
                     self.menu_button.at(Point(15, 15)).show().render(self.mouse)
                     self.settings_font.full_render(" PAUSED ", "white", Point._key(), highlighted=True, highlight_color="orange")
+                elif state == GameStates.LOST:
+                    self.menu_button.at(Point(15, 15)).show().render(self.mouse)
+                    self.settings_font.full_render(" LOST ", "red", Point._key(), highlighted=True, highlight_color="gray")
             case GameStates.QUITTING:
                 self.font.full_render("QUITTING...", "black", Point._key())
         pygame.display.update()
