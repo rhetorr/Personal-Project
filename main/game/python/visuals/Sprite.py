@@ -1,6 +1,6 @@
 import pygame
 from GameStates import GameStates
-from util.mathextra.Location import Point
+from util.mathextra.Location import Angle, Point
 from visuals import VisualsUtil
 from util.ImageHelpers import ImageHelpers
 from util.RectHelpers import RectHelpers
@@ -15,8 +15,9 @@ class Sprite(RectHelpers):
         self._shown_ = False
         self.__window__ = window
         self.size.with_mid(Point(self.__window__.get_width(), self.__window__.get_height()))
-    def with_image(self, name):
-        self.sprite = self.i_h.resize(self.i_h.get(name), self.size)
+    def with_image(self, name, rotation: Angle = Angle.in_degrees(0)):
+        raw = self.i_h.get(name)
+        self.sprite = self.i_h.resize(self.i_h.rotate(raw, rotation), self.size)
         return self
     def render(self):
         self.__window__.blit(self.sprite, self.pos.tuple())

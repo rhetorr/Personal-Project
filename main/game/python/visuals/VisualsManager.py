@@ -4,7 +4,7 @@ from util.RectHelpers import RectHelpers
 from util.MouseUtil import Mouse, ClickType
 from visuals.Button import Button
 from player.Rocket import Rocket
-from util.mathextra.Location import Point
+from util.mathextra.Location import Angle, Point
 from util.TextHelpers import TextHelpers
 from .Sprite import Sprite
 from visuals import VisualsUtil
@@ -30,6 +30,7 @@ class VisualsManager:
         self.icon = Sprite(self._window_, self.res_scalar.times(Point.fill(100))).with_image(icon_filename)
         pygame.display.set_icon(self.icon.sprite)
         
+        self.space_bg = Sprite(self._window_, Point(self._window_.get_width(), self._window_.get_height())).with_image("stars.jpg", rotation=Angle.in_degrees(90))
         
         self.font = TextHelpers(self._window_, "arial", round(20*self.res_scalar.x))
         self.settings_font = TextHelpers(self._window_, "times new roman", round(40*self.res_scalar.x))
@@ -63,6 +64,8 @@ class VisualsManager:
         self.back_button.hide()
         self.fullscreen_button.hide()
         
+        self.space_bg.hide()
+        
         match state:
             case GameStates.LAUNCHING:
                 self.font.full_render("LOADING...", "black", Point._key())
@@ -83,6 +86,7 @@ class VisualsManager:
                 self.fullscreen_button.at(Point(self.txt_fullscreen.get_width()/2-self.fullscreen_button.size.x/2,self.txt_fullscreen.get_height()).plus(Point(125,25).times(self.res_scalar))).show().render(self.mouse)
                 
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST:
+                self.space_bg.show().at(Point.fill(0)).render()
                 player.render()
                 t = self.font.make_text(str(timer), "black")
                 self.font.render(t, Point(0, self._window_.get_height()-t.get_height()))
