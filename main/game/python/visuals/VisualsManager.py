@@ -46,6 +46,8 @@ class VisualsManager:
         self.txt_fullscreen = self.settings_font.make_text("Fullscreen", "black")
         self.fullscreen_button = Button(self._window_, Point.fill(0), Point.fill(75).times(self.res_scalar), "", round(30*self.res_scalar.x), bg_hover="gray")
         
+        self.menu_button = Button(self._window_, Point.fill(0), Point(125, 75).times(self.res_scalar), "Menu", round(50*self.res_scalar.x), bg_hover="orange")
+        
     def render(self, surface, coords):
         return self._window_.blit(surface, coords)
     
@@ -65,6 +67,7 @@ class VisualsManager:
         self.fullscreen_button.hide()
         
         self.space_bg.hide()
+        self.menu_button.hide()
         
         match state:
             case GameStates.LAUNCHING:
@@ -85,11 +88,15 @@ class VisualsManager:
                     self.fullscreen_button.with_text("")
                 self.fullscreen_button.at(Point(self.txt_fullscreen.get_width()/2-self.fullscreen_button.size.x/2,self.txt_fullscreen.get_height()).plus(Point(125,25).times(self.res_scalar))).show().render(self.mouse)
                 
-            case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST:
+            case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST | GameStates.PAUSED:
                 self.space_bg.show().at(Point.fill(0)).render()
                 player.render()
                 t = self.font.make_text(str(timer), "white")
                 self.font.render(t, Point(0, self._window_.get_height()-t.get_height()))
+                
+                if state == GameStates.PAUSED:
+                    self.menu_button.at(Point(15, 15)).show().render(self.mouse)
+                    self.settings_font.full_render(" PAUSED ", "white", Point._key(), highlighted=True, highlight_color="orange")
             case GameStates.QUITTING:
                 self.font.full_render("QUITTING...", "black", Point._key())
         pygame.display.update()

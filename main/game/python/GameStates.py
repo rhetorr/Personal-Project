@@ -7,5 +7,6 @@ class GameStates(enum.Enum):
     MENU = 2
     STARTING = 3
     PLAYING = 4
-    LOST = 5
-    QUITTING = 6
+    PAUSED = 5
+    LOST = 6
+    QUITTING = 7
