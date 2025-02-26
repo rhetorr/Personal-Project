@@ -88,7 +88,7 @@ class VisualsManager:
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST:
                 self.space_bg.show().at(Point.fill(0)).render()
                 player.render()
-                t = self.font.make_text(str(timer), "black")
+                t = self.font.make_text(str(timer), "white")
                 self.font.render(t, Point(0, self._window_.get_height()-t.get_height()))
             case GameStates.QUITTING:
                 self.font.full_render("QUITTING...", "black", Point._key())

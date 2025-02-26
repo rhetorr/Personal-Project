@@ -57,12 +57,17 @@ class Game(VisualsManager):
         self.__running__ = True
         player = Rocket(self._window_, Point.fill(64), self.res_scalar)
         dt_last_frame = 0.0
+        player_bounds = Point(self._window_.get_width()-player.size.x, self._window_.get_height()-player.size.y)
+        player_vel = Point(0,0)
+        lookahead_player = player.pos.get_point()
         
         logger = threading.Thread(target=self.log, args=(0.5, ), daemon=True)
         
         just_starting = False
         game_start_time = time.time()
         starting_intermission = 1.0
+        within_window_x = False
+        within_window_y = False
         
         keys = pygame.key.get_pressed()
         
@@ -73,6 +78,7 @@ class Game(VisualsManager):
         while self.__running__:
             keys = pygame.key.get_pressed()
             self.use_logs([self.state.name])
+            
             
             match self.state:
                 case GameStates.LAUNCHING: #reset all values for game start
@@ -93,19 +99,30 @@ class Game(VisualsManager):
                     if not just_starting:
                         just_starting = True
                         game_start_time = time.time()
-                    player.at(Point(self._window_.get_width()/2 - player.size.x/2, self._window_.get_height() - player.size.y))
+                        player.at(Point(self._window_.get_width()/2 - player.size.x/2, self._window_.get_height() - player.size.y - Settings.player_speed(self.res_scalar).y))
                     if time.time() - game_start_time > starting_intermission:
                         self.set_state(GameStates.PLAYING)
                         just_starting = False
                 case GameStates.PLAYING: #gameplay logic
-                    if keys[pygame.K_w]:
-                        player.move_y(-Settings.player_speed(self.res_scalar).y * dt_last_frame)
-                    elif keys[pygame.K_s]:
-                        player.move_y(Settings.player_speed(self.res_scalar).y * dt_last_frame)
-                    if keys[pygame.K_d]:
-                        player.move_x(Settings.player_speed(self.res_scalar).x * dt_last_frame)
-                    elif keys[pygame.K_a]:
-                        player.move_x(-Settings.player_speed(self.res_scalar).x * dt_last_frame)
+                    if keys[pygame.K_w] and within_window_y:
+                        player_vel.y = -Settings.player_speed(self.res_scalar).y * dt_last_frame
+                    elif keys[pygame.K_s] and within_window_y:
+                        player_vel.y = Settings.player_speed(self.res_scalar).y * dt_last_frame
+                    else:
+                        player_vel.y = 0
+                    if keys[pygame.K_d] and within_window_x:
+                        player_vel.x = Settings.player_speed(self.res_scalar).x * dt_last_frame
+                    elif keys[pygame.K_a] and within_window_x:
+                        player_vel.x = -Settings.player_speed(self.res_scalar).x * dt_last_frame
+                    else:
+                        player_vel.x = 0
+                    lookahead_player = player.pos.get_point().plus(player_vel)
+                    within_window_x = 0 < lookahead_player.x and lookahead_player.x < player_bounds.x
+                    within_window_y = 0 < lookahead_player.y and lookahead_player.y < player_bounds.y
+                    if within_window_x:
+                        player.move_x(player_vel.x)
+                    if within_window_y:
+                        player.move_y(player_vel.y)
                 case GameStates.LOST: #lost, ready to go back to menu
                     player.at(player.pos.get_point())
                 case GameStates.QUITTING: #final actions before closings
