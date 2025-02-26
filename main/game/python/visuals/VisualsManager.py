@@ -1,5 +1,6 @@
 import pygame
 from GameStates import GameStates
+from entities.FuelCell import FuelCell
 from util.RectHelpers import RectHelpers
 from util.MouseUtil import Mouse, ClickType
 from visuals.Button import Button
@@ -55,7 +56,7 @@ class VisualsManager:
         pygame.draw.line(self._window_, "black", (self._window_.get_width()/2, 0), (self._window_.get_width()/2, self._window_.get_height()))
         pygame.draw.line(self._window_, "black", (0, self._window_.get_height()/2), (self._window_.get_width(), self._window_.get_height()/2))
     
-    def graphics(self, state: GameStates, player: Rocket, timer):
+    def graphics(self, state: GameStates, player: Rocket, fuel: FuelCell, timer):
         self._window_.fill("white")
         
         self.icon_menu.hide()
@@ -91,6 +92,7 @@ class VisualsManager:
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST | GameStates.PAUSED:
                 self.space_bg.show().at(Point.fill(0)).render()
                 player.render()
+                fuel.render()
                 t = self.font.make_text_highlighted("time: " + str(timer), "white", "black")
                 self.font.full_render("fuel: " + str(round(player.fuel, ndigits=2)) + "%", "white", Point(0, self._window_.get_height()-(t.get_height()*1) ))
                 self.font.full_render("best time: " + str(self.config_settings["best_time"]), "white", Point(0, self._window_.get_height()-(t.get_height()*2) ))

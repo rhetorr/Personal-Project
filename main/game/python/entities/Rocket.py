@@ -11,6 +11,7 @@ class Rocket():
         
         self.rocket = self.i_h.resize(self.i_h.get("rocket.png"), self.size)
         self.__rocket_angle__ = Angle.in_degrees(0)
+        self.rect = self.rocket.get_rect()
         
         self.pos: Orientation = Orientation.init(size.negate().minus(Point.fill(100)), Angle.in_degrees(0))
         self.fuel = 100
@@ -18,7 +19,7 @@ class Rocket():
     def render(self):
         self.rocket = self.i_h.rotate(self.rocket, self.pos.angle.minus(self.__rocket_angle__))
         self.__rocket_angle__ = self.pos.angle
-        self.__window__.blit(self.rocket, self.pos.get_point().tuple())
+        self.rect = self.__window__.blit(self.rocket, self.pos.get_point().tuple())
     def at(self, pos: Point):
         self.pos = Orientation.init(pos, self.pos.angle)
         return self

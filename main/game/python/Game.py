@@ -1,7 +1,9 @@
+import random
 import time
 import threading
 import pygame
 from GameStates import GameStates
+from entities.FuelCell import FuelCell
 from util.MouseUtil import Mouse, ClickType
 from entities.Rocket import Rocket
 from util.mathextra.Location import Point
@@ -61,6 +63,11 @@ class Game(VisualsManager):
         player_vel = Point(0,0)
         lookahead_player = player.pos.get_point()
         player_speed = Settings.player_speed(self.res_scalar)
+        
+        time_since_fuel_spawn = 0
+        next_fuel_spawn = 0
+        next_fuel_speed = 0 #px/s
+        fuel_cell = FuelCell(self._window_, Point.fill(50).times(self.res_scalar), self.res_scalar)
         
         logger = threading.Thread(target=self.log, args=(0.5, ), daemon=True)
         
@@ -123,6 +130,23 @@ class Game(VisualsManager):
                         if game_time >= self.config_settings["best_time"]:
                             self.config_settings["best_time"] = game_time
                             
+                        if fuel_cell.spawned:
+                            if fuel_cell.collided(player.rect):
+                                fuel_cell.reset()
+                                player.fuel = min(player.fuel + fuel_cell.fuel, self.config_settings["max_fuel"])
+                            elif fuel_cell.pos.y > self._window_.get_height():
+                                fuel_cell.reset()
+                            else:
+                                fuel_cell.move_y(next_fuel_speed * dt_last_frame)
+                        else:
+                            if time_since_fuel_spawn > next_fuel_spawn:
+                                fuel_cell.spawn(random.randint(0, self._window_.get_width()-round(fuel_cell.size.x)))
+                                time_since_fuel_spawn = 0
+                                next_fuel_spawn = random.randint(3, 10)
+                                next_fuel_speed = random.randint(100,100)
+                            else:
+                                time_since_fuel_spawn += dt_last_frame
+                            
                         if keys[pygame.K_w] and within_window_y:
                             player_vel.y = -player_speed.y * dt_last_frame
                         elif keys[pygame.K_s] and within_window_y:
@@ -159,10 +183,11 @@ class Game(VisualsManager):
                 case GameStates.LOST: #lost, ready to go back to menu
                     player.at(player.pos.get_point())
                     if self.menu_button.Lpressed(self.mouse):
+                        fuel_cell.reset()
                         self.set_state(GameStates.MENU)
                 case GameStates.QUITTING: #final actions before closings
                     player.at(Point.fill(0))
-            self.graphics(self.state, player, game_time)
+            self.graphics(self.state, player, fuel_cell, game_time)
             self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
             self.quit_request()

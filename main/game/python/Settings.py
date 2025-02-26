@@ -9,6 +9,7 @@ _EMPTY_SETTINGS = {
     "main_monitor": 0,
     "fullscreen": False,
     "fuel_usage": 2/60, # per second per frame
+    "max_fuel": 125,
     "best_time": 0.0
     }
 _SETTINGS_PATH = 'C:/Users/' + _USER + '/AppData/Local/PersonalProject/' + _SETTINGS_FILE_NAME
