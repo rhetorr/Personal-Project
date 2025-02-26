@@ -68,6 +68,7 @@ class Game(VisualsManager):
         game_time = time.time()
         time_paused = 0
         starting_intermission = 1.0
+        time_since_esc = time.time()
         within_window_x = False
         within_window_y = False
         
@@ -109,7 +110,9 @@ class Game(VisualsManager):
                         just_starting = False
                 case GameStates.PLAYING: #gameplay logic
                     if keys[pygame.K_ESCAPE]:
-                        self.set_state(GameStates.PAUSED)
+                        if time_since_esc > 0.2:
+                            time_since_esc = 0
+                            self.set_state(GameStates.PAUSED)
                     else:
                         game_time = round(time.time() - game_start_time - time_paused, ndigits=1)
                         if keys[pygame.K_w] and within_window_y:
@@ -131,12 +134,16 @@ class Game(VisualsManager):
                             player.move_x(player_vel.x)
                         if within_window_y:
                             player.move_y(player_vel.y)
+                    time_since_esc += dt_last_frame
                 case GameStates.PAUSED:
                     time_paused += dt_last_frame
                     if keys[pygame.K_ESCAPE]:
-                        self.set_state(GameStates.PLAYING)
+                        if time_since_esc > 0.2:
+                            time_since_esc = 0
+                            self.set_state(GameStates.PLAYING)
                     elif self.menu_button.Lpressed(self.mouse):
                         self.set_state(GameStates.MENU)
+                    time_since_esc += dt_last_frame
                 case GameStates.LOST: #lost, ready to go back to menu
                     player.at(player.pos.get_point())
                 case GameStates.QUITTING: #final actions before closings
