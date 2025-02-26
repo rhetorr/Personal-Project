@@ -36,11 +36,11 @@ class VisualsManager:
         self.font = TextHelpers(self._window_, "arial", round(20*self.res_scalar.x))
         self.settings_font = TextHelpers(self._window_, "times new roman", round(40*self.res_scalar.x))
         
-        self.back_button = Button(self._window_, Point.fill(0), self.res_scalar.times(Point.fill(75)), "<", round(30*self.res_scalar.x), bg_hover="red")
+        self.back_button = Button(self._window_, Point.fill(0), self.res_scalar.times(Point.fill(75)), "<", round(30*self.res_scalar.x), bg_hover="orange")
         
         self.icon_menu = Sprite(self._window_, self.res_scalar.times(Point.fill(225))).with_image(icon_filename)
-        self.play_button = Button(self._window_, Point.fill(0), Point(250, 75).times(self.res_scalar), "Play", round(30*self.res_scalar.x), "sky blue", "blue")
-        self.settings_button = Button(self._window_, Point.fill(0), Point(250, 75).times(self.res_scalar), "Settings", round(30*self.res_scalar.x))
+        self.play_button = Button(self._window_, Point.fill(0), Point(250, 75).times(self.res_scalar), "Play", round(30*self.res_scalar.x))
+        self.settings_button = Button(self._window_, Point.fill(0), Point(250, 75).times(self.res_scalar), "Settings", round(30*self.res_scalar.x), bg_hover="orange")
         self.quit_button = Button(self._window_, Point.fill(0), Point(250, 75).times(self.res_scalar), "Quit", round(30*self.res_scalar.x), bg_hover="red")
         
         self.settings_panel = RectHelpers(Point(100, 0).times(self.res_scalar), Point(self._window_.get_width(), self._window_.get_height()).minus(Point(200, 0).times(self.res_scalar)))
