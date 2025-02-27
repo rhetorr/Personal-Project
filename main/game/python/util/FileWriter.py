@@ -12,27 +12,30 @@ def delete_until(string: str, substring: str):
 
 class File:
     def __init__(self):
-        pack = delete_until(__file__, '\\')
-        self.__file_path = pack
+        self.pack = delete_until(__file__, '\\')
+        self.__file_path = self.pack
         self.__file_name = ""
         
-    def make(self, file_name: str):
+    def file(self):
+        return os.path.join(self.__file_path, self.__file_name)
+        
+    def exists(self) -> bool:
+        return os.path.exists(self.file())
+        
+    def make(self, file_name: str) -> 'File':
         self.__file_name = file_name
-        file = os.path.join(self.__file_path, self.__file_name)
-        if os.path.exists(file):
-            return
-        open(file, 'w').close()
+        if self.exists():
+            return self
+        open(self.file(), 'w').close()
         return self
 
     def delete_file_text(self):
-        file = os.path.join(self.__file_path, self.__file_name)
-        with open(file, 'w') as f:
+        with open(self.file(), 'w') as f:
             f.write("")
         return self
             
     def append(self, text: list[str]):
-        file = os.path.join(self.__file_path, self.__file_name)
-        with open(file, 'a') as f:
+        with open(self.file(), 'a') as f:
             for i in text:
                 f.write(i)
                 if not i == text[-1]:
@@ -45,8 +48,7 @@ class File:
         return self
     
     def read(self):
-        file = os.path.join(self.__file_path, self.__file_name)
-        with open(file, 'r') as f:
+        with open(self.file(), 'r') as f:
             return f.read()
         
 class Folder:
@@ -56,14 +58,14 @@ class Folder:
         self.folder_name = folder_name
         self.__folder_path = pack
         
-    def make(self):
-        file = os.path.join(self.__folder_path, self.folder_name)
-        if os.path.exists(file):
+    def make(self) -> 'Folder':
+        folder = os.path.join(self.__folder_path, self.folder_name)
+        if os.path.exists(folder):
             return
-        os.mkdir(file)
+        os.mkdir(folder)
         return self
     
-    def withPath(self, path):
+    def withPath(self, path) -> 'Folder':
         self.__folder_path = path
         return self
     

@@ -1,8 +1,6 @@
+import os
 from util.mathextra.Location import Point
-from util.FileWriter import File
-import getpass
-
-_USER = getpass.getuser()
+from util.FileWriter import File, Folder, delete_until
 
 _SETTINGS_FILE_NAME = "settings.txt"
 _EMPTY_SETTINGS = {
@@ -12,21 +10,23 @@ _EMPTY_SETTINGS = {
     "max_fuel": 125,
     "best_time": 0.0
     }
-_SETTINGS_PATH = 'C:/Users/' + _USER + '/AppData/Local/PersonalProject/' + _SETTINGS_FILE_NAME
 
-def player_speed(res_scalar: Point):
-    return res_scalar.times(Point.fill(64).scale_by(2)) # REMEMBER IT IS PX/S
-
-def save_settings(settings: dict):
-    file = File()
-    file.make(_SETTINGS_FILE_NAME)
-    file.__file_path = _SETTINGS_PATH
-    file.write([str(settings)])
+def save_settings(config: dict):
+    settings = File().make(_SETTINGS_FILE_NAME)
+    settings.write([str(config)])
     
 def get_config_dict() -> dict:
-    settings = File()
-    settings.make(_SETTINGS_FILE_NAME)
-    settings.__file_path = _SETTINGS_PATH
-    if not settings.read():
+    settings = File().make(_SETTINGS_FILE_NAME)
+    if not settings.exists():
+        save_settings(_EMPTY_SETTINGS)
         return _EMPTY_SETTINGS
-    return eval(settings.read())
+
+    try:
+        content = settings.read()
+        config = eval(content)
+        if not isinstance(config, dict):
+            save_settings(_EMPTY_SETTINGS)
+        return _EMPTY_SETTINGS
+    except (IndexError, SyntaxError, ValueError, NameError):
+        save_settings(_EMPTY_SETTINGS)
+        return _EMPTY_SETTINGS
