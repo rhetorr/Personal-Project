@@ -49,7 +49,9 @@ class VisualsManager:
         
         self.menu_button = Button(self._window_, Point.fill(0), Point(125, 75).times(self.res_scalar), "Menu", round(50*self.res_scalar.x), bg_hover="orange")
         
-        self.space_bg = Sprite(self._window_, Point(self._window_.get_width(), self._window_.get_height())).with_image("stars.jpg", rotation=Angle.in_degrees(90))
+        self.bg_vel = 300 # px/s
+        self.space_bg_1 = Sprite(self._window_, Point(self._window_.get_width(), self._window_.get_height())).with_image("stars.jpg", rotation=Angle.in_degrees(90))
+        self.space_bg_2 = Sprite(self._window_, Point(self._window_.get_width(), self._window_.get_height())).with_image("stars.jpg", rotation=Angle.in_degrees(90))
         
     def render(self, surface, coords):
         return self._window_.blit(surface, coords)
@@ -58,7 +60,7 @@ class VisualsManager:
         pygame.draw.line(self._window_, "black", (self._window_.get_width()/2, 0), (self._window_.get_width()/2, self._window_.get_height()))
         pygame.draw.line(self._window_, "black", (0, self._window_.get_height()/2), (self._window_.get_width(), self._window_.get_height()/2))
     
-    def graphics(self, state: GameStates, player: Rocket, fuel: FuelCell, asteroid_1: Asteroid, asteroid_2: Asteroid, asteroid_3: Asteroid, asteroid_4: Asteroid, asteroid_5: Asteroid, timer):
+    def graphics(self, state: GameStates, player: Rocket, fuel: FuelCell, asteroid_1: Asteroid, asteroid_2: Asteroid, asteroid_3: Asteroid, asteroid_4: Asteroid, asteroid_5: Asteroid, timer, dt:float):
         self._window_.fill("white")
         
         self.icon_menu.hide()
@@ -69,7 +71,8 @@ class VisualsManager:
         self.back_button.hide()
         self.fullscreen_button.hide()
         
-        self.space_bg.hide()
+        self.space_bg_1.hide()
+        self.space_bg_2.hide()
         self.menu_button.hide()
         
         match state:
@@ -92,7 +95,8 @@ class VisualsManager:
                 self.fullscreen_button.at(Point(self.txt_fullscreen.get_width()/2-self.fullscreen_button.size.x/2,self.txt_fullscreen.get_height()).plus(Point(125,25).times(self.res_scalar))).show().render(self.mouse)
                 
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST | GameStates.PAUSED:
-                self.space_bg.show().at(Point.fill(0)).render()
+                self.space_bg_1.show().render()
+                self.space_bg_2.show().render()
                 fuel.render()
                 player.render()
                 asteroid_1.render()

@@ -36,3 +36,6 @@ class Sprite(RectHelpers):
         else:
             self.__saved_pos__ = pos
         return self
+    def move_y(self, amount: float):
+        self.at(self.pos.plus(Point(0, amount)))
+        return self

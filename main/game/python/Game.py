@@ -143,6 +143,8 @@ class Game(VisualsManager):
                         asteroid_4.reset()
                         asteroid_5.reset()
                         fuel_cell.reset()
+                        self.space_bg_1.at(Point.fill(0))
+                        self.space_bg_2.at(Point(0,-self.space_bg_2.size.y+100))
                         player.at(Point(self._window_.get_width()/2 - player.size.x/2, self._window_.get_height() - player.size.y - 8))
                     if time.time() - game_start_time > starting_intermission:
                         self.set_state(GameStates.PLAYING)
@@ -161,6 +163,13 @@ class Game(VisualsManager):
                         game_time = round(time.time() - game_start_time - time_paused, ndigits=1)
                         if game_time >= self.config_settings["best_time"]:
                             self.config_settings["best_time"] = game_time
+                        
+                        if self.space_bg_1.pos.y + self.bg_vel*dt_last_frame + 100 > self._window_.get_height():
+                            self.space_bg_1.show().at(Point.fill(0)).render()
+                            self.space_bg_2.show().at(Point(0,-self.space_bg_2.size.y+100)).render()
+                        else:
+                            self.space_bg_1.show().move_y(self.bg_vel*dt_last_frame).render()
+                            self.space_bg_2.show().move_y(self.bg_vel*dt_last_frame).render()
                             
                         if fuel_cell.spawned:
                             if fuel_cell.collided(player.rect):
@@ -304,7 +313,7 @@ class Game(VisualsManager):
                         self.set_state(GameStates.MENU)
                 case GameStates.QUITTING: #final actions before closings
                     player.at(Point.fill(0))
-            self.graphics(self.state, player, fuel_cell, asteroid_1, asteroid_2, asteroid_3, asteroid_4, asteroid_5, game_time)
+            self.graphics(self.state, player, fuel_cell, asteroid_1, asteroid_2, asteroid_3, asteroid_4, asteroid_5, game_time, dt_last_frame)
             self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
             self.quit_request()
