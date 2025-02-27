@@ -90,7 +90,7 @@ class Game(VisualsManager):
         time_since_fuel_spawn = 0
         next_fuel_spawn = 0
         next_fuel_speed = 0 #px/s
-        fuel_cell = FuelCell(self._window_, Point.fill(50).times(self.res_scalar), self.res_scalar)
+        fuel_cell = FuelCell(self._window_, Point.fill(25).times(self.res_scalar), self.res_scalar)
         
         logger = threading.Thread(target=self.log, args=(0.5, ), daemon=True)
         
