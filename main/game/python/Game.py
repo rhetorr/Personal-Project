@@ -63,7 +63,7 @@ class Game(VisualsManager):
         player_bounds = Point(self._window_.get_width()-player.size.x, self._window_.get_height()-player.size.y)
         player_vel = Point(0,0)
         lookahead_player = player.pos.get_point()
-        player_speed = Point(64*2, self.bg_vel)
+        player_speed = Point(self.bg_vel, self.bg_vel)
         
         asteroid_1 = Asteroid(self._window_, Point.fill(100), self.res_scalar)
         time_since_asteroid_spawn_1 = 0
