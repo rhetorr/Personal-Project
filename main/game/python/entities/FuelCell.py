@@ -15,7 +15,7 @@ class FuelCell():
         self.rect = self.tank.get_rect()
         
         self.pos: Orientation = Orientation.init(size.negate().minus(Point.fill(100)), Angle.in_degrees(0))
-        self.fuel = float(random.randint(10, 50))
+        self.fuel = float(random.randint(5, 15))
         self.spawned = False
     def render(self):
         self.tank = self.i_h.rotate(self.tank, self.pos.angle.minus(self.__tank_angle__))
@@ -41,6 +41,6 @@ class FuelCell():
         self.rect = self.tank.get_rect()
         
         self.pos: Orientation = Orientation.init(self.size.negate().minus(Point.fill(100)), Angle.in_degrees(0))
-        self.fuel = float(random.randint(10, 50))
+        self.fuel = float(random.randint(5, 15))
         self.spawned = False
         return self

@@ -63,7 +63,7 @@ class Game(VisualsManager):
         player_bounds = Point(self._window_.get_width()-player.size.x, self._window_.get_height()-player.size.y)
         player_vel = Point(0,0)
         lookahead_player = player.pos.get_point()
-        player_speed = Settings.player_speed(self.res_scalar)
+        player_speed = Point(64*2, self.bg_vel)
         
         asteroid_1 = Asteroid(self._window_, Point.fill(100), self.res_scalar)
         time_since_asteroid_spawn_1 = 0
@@ -184,7 +184,7 @@ class Game(VisualsManager):
                                 fuel_cell.spawn(random.randint(0, self._window_.get_width()-round(fuel_cell.size.x)))
                                 time_since_fuel_spawn = 0
                                 next_fuel_spawn = random.randint(3, 10)
-                                next_fuel_speed = random.randint(100,100)
+                                next_fuel_speed = random.randint(self.bg_vel,self.bg_vel+150)
                             else:
                                 time_since_fuel_spawn += dt_last_frame
                         
@@ -201,7 +201,7 @@ class Game(VisualsManager):
                                 asteroid_1.spawn(random.randint(0, self._window_.get_width()-round(asteroid_1.size.x)))
                                 time_since_asteroid_spawn_1 = 0
                                 next_asteroid_spawn_1 = random.randint(0, 2)
-                                asteroid_1.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                                asteroid_1.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
                             else:
                                 time_since_asteroid_spawn_1 += dt_last_frame
                                 
@@ -218,7 +218,7 @@ class Game(VisualsManager):
                                 asteroid_2.spawn(random.randint(0, self._window_.get_width()-round(asteroid_2.size.x)))
                                 time_since_asteroid_spawn_2 = 0
                                 next_asteroid_spawn_2 = random.randint(1, 4)
-                                asteroid_2.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                                asteroid_2.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
                             else:
                                 time_since_asteroid_spawn_2 += dt_last_frame
                                 
@@ -235,7 +235,7 @@ class Game(VisualsManager):
                                 asteroid_3.spawn(random.randint(0, self._window_.get_width()-round(asteroid_3.size.x)))
                                 time_since_asteroid_spawn_3 = 0
                                 next_asteroid_spawn_3 = random.randint(0, 1)
-                                asteroid_3.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                                asteroid_3.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
                             else:
                                 time_since_asteroid_spawn_3 += dt_last_frame
                                 
@@ -252,7 +252,7 @@ class Game(VisualsManager):
                                 asteroid_4.spawn(random.randint(0, self._window_.get_width()-round(asteroid_4.size.x)))
                                 time_since_asteroid_spawn_4 = 0
                                 next_asteroid_spawn_4 = random.randint(0, 1)
-                                asteroid_4.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                                asteroid_4.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
                             else:
                                 time_since_asteroid_spawn_4 += dt_last_frame
                                 
@@ -269,7 +269,7 @@ class Game(VisualsManager):
                                 asteroid_5.spawn(random.randint(0, self._window_.get_width()-round(asteroid_5.size.x)))
                                 time_since_asteroid_spawn_5 = 0
                                 next_asteroid_spawn_5 = random.randint(2, 4)
-                                asteroid_5.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                                asteroid_5.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
                             else:
                                 time_since_asteroid_spawn_5 += dt_last_frame
                             

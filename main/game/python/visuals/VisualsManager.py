@@ -49,7 +49,7 @@ class VisualsManager:
         
         self.menu_button = Button(self._window_, Point.fill(0), Point(125, 75).times(self.res_scalar), "Menu", round(50*self.res_scalar.x), bg_hover="orange")
         
-        self.bg_vel = 300 # px/s
+        self.bg_vel = round(300 * self.res_scalar.y) # px/s
         self.space_bg_1 = Sprite(self._window_, Point(self._window_.get_width(), self._window_.get_height())).with_image("stars.jpg", rotation=Angle.in_degrees(90))
         self.space_bg_2 = Sprite(self._window_, Point(self._window_.get_width(), self._window_.get_height())).with_image("stars.jpg", rotation=Angle.in_degrees(90))
         

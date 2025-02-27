@@ -22,8 +22,9 @@ class Asteroid:
         
     def render(self):
         # self.__window__.blit(self.fire, self.pos.get_point().minus(Point(150, 1.75*self.size.y)).tuple())
-        temp = self.i_h.rotate(self.asteroid, self.pos.angle)
-        self.rect = self.__window__.blit(temp, self.pos.get_point().tuple())
+        # temp = self.i_h.rotate(self.asteroid, self.pos.angle)
+        # TODO: commented out until you look into using mask objects from pygame for "pixel perfect collisions"
+        self.rect = self.__window__.blit(self.asteroid, self.pos.get_point().tuple())
     def spawn(self, xpos):
         self.pos = Orientation.init(Point(xpos, -self.size.y), self.pos.angle)
         self.spawned = True
