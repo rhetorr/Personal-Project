@@ -26,7 +26,8 @@ def get_config_dict() -> dict:
         config = eval(content)
         if not isinstance(config, dict):
             save_settings(_EMPTY_SETTINGS)
-        return _EMPTY_SETTINGS
+            return _EMPTY_SETTINGS
+        return config
     except (IndexError, SyntaxError, ValueError, NameError):
         save_settings(_EMPTY_SETTINGS)
         return _EMPTY_SETTINGS
