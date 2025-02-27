@@ -1,6 +1,7 @@
 import pygame
 from GameStates import GameStates
 from entities.FuelCell import FuelCell
+from entities.Asteroid import Asteroid
 from util.RectHelpers import RectHelpers
 from util.MouseUtil import Mouse, ClickType
 from visuals.Button import Button
@@ -31,7 +32,6 @@ class VisualsManager:
         self.icon = Sprite(self._window_, self.res_scalar.times(Point.fill(100))).with_image(icon_filename)
         pygame.display.set_icon(self.icon.sprite)
         
-        self.space_bg = Sprite(self._window_, Point(self._window_.get_width(), self._window_.get_height())).with_image("stars.jpg", rotation=Angle.in_degrees(90))
         
         self.font = TextHelpers(self._window_, "arial", round(20*self.res_scalar.x))
         self.settings_font = TextHelpers(self._window_, "times new roman", round(40*self.res_scalar.x))
@@ -49,6 +49,8 @@ class VisualsManager:
         
         self.menu_button = Button(self._window_, Point.fill(0), Point(125, 75).times(self.res_scalar), "Menu", round(50*self.res_scalar.x), bg_hover="orange")
         
+        self.space_bg = Sprite(self._window_, Point(self._window_.get_width(), self._window_.get_height())).with_image("stars.jpg", rotation=Angle.in_degrees(90))
+        
     def render(self, surface, coords):
         return self._window_.blit(surface, coords)
     
@@ -56,7 +58,7 @@ class VisualsManager:
         pygame.draw.line(self._window_, "black", (self._window_.get_width()/2, 0), (self._window_.get_width()/2, self._window_.get_height()))
         pygame.draw.line(self._window_, "black", (0, self._window_.get_height()/2), (self._window_.get_width(), self._window_.get_height()/2))
     
-    def graphics(self, state: GameStates, player: Rocket, fuel: FuelCell, timer):
+    def graphics(self, state: GameStates, player: Rocket, fuel: FuelCell, asteroid_1: Asteroid, asteroid_2: Asteroid, asteroid_3: Asteroid, asteroid_4: Asteroid, asteroid_5: Asteroid, timer):
         self._window_.fill("white")
         
         self.icon_menu.hide()
@@ -91,8 +93,13 @@ class VisualsManager:
                 
             case GameStates.STARTING | GameStates.PLAYING | GameStates.LOST | GameStates.PAUSED:
                 self.space_bg.show().at(Point.fill(0)).render()
-                player.render()
                 fuel.render()
+                player.render()
+                asteroid_1.render()
+                asteroid_2.render()
+                asteroid_3.render()
+                asteroid_4.render()
+                asteroid_5.render()
                 t = self.font.make_text_highlighted("time: " + str(timer), "white", "black")
                 self.font.full_render("fuel: " + str(round(player.fuel, ndigits=2)) + "%", "white", Point(0, self._window_.get_height()-(t.get_height()*1) ))
                 self.font.full_render("best time: " + str(self.config_settings["best_time"]), "white", Point(0, self._window_.get_height()-(t.get_height()*2) ))

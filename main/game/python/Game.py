@@ -4,9 +4,10 @@ import threading
 import pygame
 from GameStates import GameStates
 from entities.FuelCell import FuelCell
+from entities.Asteroid import Asteroid
 from util.MouseUtil import Mouse, ClickType
 from entities.Rocket import Rocket
-from util.mathextra.Location import Point
+from util.mathextra.Location import Angle, Point, Vector
 from visuals.Sprite import Sprite
 from util.ImageHelpers import ImageHelpers
 from util.RectHelpers import RectHelpers
@@ -64,6 +65,28 @@ class Game(VisualsManager):
         lookahead_player = player.pos.get_point()
         player_speed = Settings.player_speed(self.res_scalar)
         
+        asteroid_1 = Asteroid(self._window_, Point.fill(100), self.res_scalar)
+        time_since_asteroid_spawn_1 = 0
+        next_asteroid_spawn_1 = 0
+        
+        asteroid_2 = Asteroid(self._window_, Point.fill(50), self.res_scalar)
+        time_since_asteroid_spawn_2 = 0
+        next_asteroid_spawn_2 = 0
+        
+        asteroid_3 = Asteroid(self._window_, Point.fill(25), self.res_scalar)
+        time_since_asteroid_spawn_3 = 0
+        next_asteroid_spawn_3 = 0
+        
+        asteroid_4 = Asteroid(self._window_, Point.fill(25), self.res_scalar)
+        time_since_asteroid_spawn_4 = 0
+        next_asteroid_spawn_4 = 0
+        
+        asteroid_5 = Asteroid(self._window_, Point.fill(125), self.res_scalar)
+        time_since_asteroid_spawn_5 = 0
+        next_asteroid_spawn_5 = 0
+        
+        collided_with_asteroid = False
+        
         time_since_fuel_spawn = 0
         next_fuel_spawn = 0
         next_fuel_speed = 0 #px/s
@@ -113,6 +136,13 @@ class Game(VisualsManager):
                         game_start_time = time.time()
                         time_paused = 0
                         player.fuel = 100
+                        collided_with_asteroid = False
+                        asteroid_1.reset()
+                        asteroid_2.reset()
+                        asteroid_3.reset()
+                        asteroid_4.reset()
+                        asteroid_5.reset()
+                        fuel_cell.reset()
                         player.at(Point(self._window_.get_width()/2 - player.size.x/2, self._window_.get_height() - player.size.y - 8))
                     if time.time() - game_start_time > starting_intermission:
                         self.set_state(GameStates.PLAYING)
@@ -124,6 +154,8 @@ class Game(VisualsManager):
                             self.set_state(GameStates.PAUSED)
                     elif player.fuel <= 0:
                         player.fuel = 0
+                        self.set_state(GameStates.LOST)
+                    elif collided_with_asteroid:
                         self.set_state(GameStates.LOST)
                     else:
                         game_time = round(time.time() - game_start_time - time_paused, ndigits=1)
@@ -146,6 +178,91 @@ class Game(VisualsManager):
                                 next_fuel_speed = random.randint(100,100)
                             else:
                                 time_since_fuel_spawn += dt_last_frame
+                        
+                        if asteroid_1.spawned:
+                            if asteroid_1.collided(player.rect):
+                                collided_with_asteroid = True
+                            elif asteroid_1.pos.y > self._window_.get_height():
+                                asteroid_1.reset()
+                            else:
+                                asteroid_1.spin()
+                                asteroid_1.move_along_path(dt_last_frame)
+                        else:
+                            if time_since_asteroid_spawn_1 > next_asteroid_spawn_1:
+                                asteroid_1.spawn(random.randint(0, self._window_.get_width()-round(asteroid_1.size.x)))
+                                time_since_asteroid_spawn_1 = 0
+                                next_asteroid_spawn_1 = random.randint(0, 2)
+                                asteroid_1.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                            else:
+                                time_since_asteroid_spawn_1 += dt_last_frame
+                                
+                        if asteroid_2.spawned:
+                            if asteroid_2.collided(player.rect):
+                                collided_with_asteroid = True
+                            elif asteroid_2.pos.y > self._window_.get_height():
+                                asteroid_2.reset()
+                            else:
+                                asteroid_2.spin()
+                                asteroid_2.move_along_path(dt_last_frame)
+                        else:
+                            if time_since_asteroid_spawn_2 > next_asteroid_spawn_2:
+                                asteroid_2.spawn(random.randint(0, self._window_.get_width()-round(asteroid_2.size.x)))
+                                time_since_asteroid_spawn_2 = 0
+                                next_asteroid_spawn_2 = random.randint(1, 4)
+                                asteroid_2.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                            else:
+                                time_since_asteroid_spawn_2 += dt_last_frame
+                                
+                        if asteroid_3.spawned:
+                            if asteroid_3.collided(player.rect):
+                                collided_with_asteroid = True
+                            elif asteroid_3.pos.y > self._window_.get_height():
+                                asteroid_3.reset()
+                            else:
+                                asteroid_3.spin()
+                                asteroid_3.move_along_path(dt_last_frame)
+                        else:
+                            if time_since_asteroid_spawn_3 > next_asteroid_spawn_3:
+                                asteroid_3.spawn(random.randint(0, self._window_.get_width()-round(asteroid_3.size.x)))
+                                time_since_asteroid_spawn_3 = 0
+                                next_asteroid_spawn_3 = random.randint(0, 1)
+                                asteroid_3.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                            else:
+                                time_since_asteroid_spawn_3 += dt_last_frame
+                                
+                        if asteroid_4.spawned:
+                            if asteroid_4.collided(player.rect):
+                                collided_with_asteroid = True
+                            elif asteroid_4.pos.y > self._window_.get_height():
+                                asteroid_4.reset()
+                            else:
+                                asteroid_4.spin()
+                                asteroid_4.move_along_path(dt_last_frame)
+                        else:
+                            if time_since_asteroid_spawn_4 > next_asteroid_spawn_4:
+                                asteroid_4.spawn(random.randint(0, self._window_.get_width()-round(asteroid_4.size.x)))
+                                time_since_asteroid_spawn_4 = 0
+                                next_asteroid_spawn_4 = random.randint(0, 1)
+                                asteroid_4.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                            else:
+                                time_since_asteroid_spawn_4 += dt_last_frame
+                                
+                        if asteroid_5.spawned:
+                            if asteroid_5.collided(player.rect):
+                                collided_with_asteroid = True
+                            elif asteroid_5.pos.y > self._window_.get_height():
+                                asteroid_5.reset()
+                            else:
+                                asteroid_5.spin()
+                                asteroid_5.move_along_path(dt_last_frame)
+                        else:
+                            if time_since_asteroid_spawn_5 > next_asteroid_spawn_5:
+                                asteroid_5.spawn(random.randint(0, self._window_.get_width()-round(asteroid_5.size.x)))
+                                time_since_asteroid_spawn_5 = 0
+                                next_asteroid_spawn_5 = random.randint(2, 4)
+                                asteroid_5.vector = Vector(float(random.randint(300, 300)), Angle.in_degrees(float(random.randint(60, 120))))
+                            else:
+                                time_since_asteroid_spawn_5 += dt_last_frame
                             
                         if keys[pygame.K_w] and within_window_y:
                             player_vel.y = -player_speed.y * dt_last_frame
@@ -187,7 +304,7 @@ class Game(VisualsManager):
                         self.set_state(GameStates.MENU)
                 case GameStates.QUITTING: #final actions before closings
                     player.at(Point.fill(0))
-            self.graphics(self.state, player, fuel_cell, game_time)
+            self.graphics(self.state, player, fuel_cell, asteroid_1, asteroid_2, asteroid_3, asteroid_4, asteroid_5, game_time)
             self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
             self.quit_request()
