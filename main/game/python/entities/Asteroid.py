@@ -9,11 +9,12 @@ class Asteroid:
         self.size = size.times(res_scalar)
         self.__window__ = window
         self.i_h = ImageHelpers(VisualsUtil._ASSETS_PATH)
+        self.windowmask = pygame.mask.from_surface(self.__window__)
         
         self.asteroid = self.i_h.resize(self.i_h.get("Asteroid.png"), self.size)
+        self.asteroid_mask = pygame.mask.from_surface(self.asteroid)
         self.fire_size = self.size.times(Point(1.8, 3)).scale_by(1.1)
         self.fire = self.i_h.resize(self.i_h.get("fire.png"), self.fire_size)
-        self.rect = self.asteroid.get_rect()
         
         self.pos: Orientation = Orientation.init(size.negate().minus(Point.fill(200)), Angle.in_degrees(0))
         self.vector = Vector(0, Angle.in_degrees(180))
@@ -24,7 +25,8 @@ class Asteroid:
         # self.__window__.blit(self.fire, self.pos.get_point().minus(Point(150, 1.75*self.size.y)).tuple())
         # temp = self.i_h.rotate(self.asteroid, self.pos.angle)
         # TODO: commented out until you look into using mask objects from pygame for "pixel perfect collisions"
-        self.rect = self.__window__.blit(self.asteroid, self.pos.get_point().tuple())
+        self.__window__.blit(self.asteroid, self.pos.get_point().tuple())
+        # self.asteroid.draw(, self.pos.get_point().tuple())
     def spawn(self, xpos):
         self.pos = Orientation.init(Point(xpos, -self.size.y), self.pos.angle)
         self.spawned = True
@@ -42,12 +44,13 @@ class Asteroid:
         self.pos = self.pos.rotate_by(self.angle_vel)
         return self
     
-    def collided(self, other: pygame.Rect)->bool:
-        temp = self.rect
-        vel = self.vector.get_point().scale_by(1/60)
-        temp.x += vel.x
-        temp.y += vel.y
-        return temp.colliderect(other)
+    def collided(self, other: pygame.Mask, other_point: Point)->bool:
+        # temp = self.rect
+        # vel = self.vector.get_point().scale_by(1/60)
+        # temp.x += vel.x
+        # temp.y += vel.y
+        # return temp.colliderect(other)
+        return self.asteroid_mask.overlap(other, other_point.minus(self.pos).round().tuple())
     
     def move_along_path(self, dt):
         self.pos = self.pos.translate_by(self.vector.get_point().scale_by(dt))

@@ -30,6 +30,12 @@ class Point:
     
     def negate(self):
         return self.scale_by(-1)
+    def round(self, digits: int = 0):
+        if digits < 0:
+            return self
+        else:
+            return Point(round(self.x, ndigits=digits), round(self.y, ndigits=digits))
+    
     
     def tuple(self)->tuple[float, float]:
         return (self.x, self.y)
