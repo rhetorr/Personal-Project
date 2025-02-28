@@ -29,7 +29,7 @@ class VisualsManager:
         
         self._window_ = pygame.display.set_mode(self.used_res, vsync=1) #creating window
         pygame.display.set_caption(caption)
-        self.icon = Sprite(self._window_, self.res_scalar.times(Point.fill(100))).with_image(icon_filename)
+        self.icon = Sprite(self._window_, self.res_scalar.times(Point.fill(100))).with_image("rocket.png")
         pygame.display.set_icon(self.icon.sprite)
         
         
@@ -38,14 +38,14 @@ class VisualsManager:
         
         self.back_button = Button(self._window_, Point.fill(0), self.res_scalar.times(Point.fill(75)), "<", round(30*self.res_scalar.x), bg_hover="orange")
         
-        self.icon_menu = Sprite(self._window_, self.res_scalar.times(Point.fill(225))).with_image(icon_filename)
+        self.icon_menu = Sprite(self._window_, self.res_scalar.times(Point(325, 400))).with_image(icon_filename)
         self.play_button = Button(self._window_, Point.fill(0), Point(250, 75).times(self.res_scalar), "Play", round(30*self.res_scalar.x))
         self.settings_button = Button(self._window_, Point.fill(0), Point(250, 75).times(self.res_scalar), "Settings", round(30*self.res_scalar.x), bg_hover="orange")
         self.quit_button = Button(self._window_, Point.fill(0), Point(250, 75).times(self.res_scalar), "Quit", round(30*self.res_scalar.x), bg_hover="red")
         
         self.settings_panel = RectHelpers(Point(100, 0).times(self.res_scalar), Point(self._window_.get_width(), self._window_.get_height()).minus(Point(200, 0).times(self.res_scalar)))
-        self.txt_fullscreen = self.settings_font.make_text("Fullscreen", "black")
-        self.fullscreen_button = Button(self._window_, Point.fill(0), Point.fill(75).times(self.res_scalar), "", round(30*self.res_scalar.x), bg_hover="gray")
+        self.txt_fullscreen = self.settings_font.make_text("Fullscreen", "white")
+        self.fullscreen_button = Button(self._window_, Point.fill(0), Point.fill(75).times(self.res_scalar), "", round(30*self.res_scalar.x), bg_color= pygame.Color(0, 150, 0).grayscale(), bg_hover="gray")
         
         self.menu_button = Button(self._window_, Point.fill(0), Point(125, 75).times(self.res_scalar), "Menu", round(50*self.res_scalar.x), bg_hover="orange")
         
@@ -79,20 +79,22 @@ class VisualsManager:
             case GameStates.LAUNCHING:
                 self.font.full_render("LOADING...", "black", Point._key())
             case GameStates.MENU:
+                self._window_.fill('black')
                 self.icon_menu.at(Point(self._window_.get_width()/2-self.icon_menu.size.x/2, 0)).show().render()
                 self.play_button.at(Point(self._window_.get_width()/2-self.play_button.size.x/2, self._window_.get_height()/2-self.play_button.size.y/2).minus(Point(0, 100).times(self.res_scalar))).show().render(self.mouse)
                 self.settings_button.at(Point(self._window_.get_width()/2-self.settings_button.size.x/2, self._window_.get_height()/2)).show().render(self.mouse)
                 self.quit_button.at(Point(self._window_.get_width()/2-self.quit_button.size.x/2, self._window_.get_height()/2-self.quit_button.size.y/2).plus(Point(0,200).times(self.res_scalar))).show().render(self.mouse)
             case GameStates.SETTINGS:
-                self.settings_panel.render(self._window_, "gray")
+                self._window_.fill('black')
+                self.settings_panel.render(self._window_, pygame.Color(0, 50, 0).grayscale())
                 self.back_button.at(Point(15,15).times(self.res_scalar)).show().render(self.mouse)
                 
                 self.settings_font.render(self.txt_fullscreen, Point(125, 25).times(self.res_scalar))
                 
-                self.settings_font.full_render("Best time:", "black", Point(125 + 250, 25).times(self.res_scalar))
-                self.settings_font.full_render(str(self.config_settings["best_time"]), 'black', Point(125 + 250, self.fullscreen_button.pos.y).times(self.res_scalar))
-                self.settings_font.full_render("Best score:", "black", Point(125 + 500, 25).times(self.res_scalar))
-                self.settings_font.full_render(str(self.config_settings["best_score"]), 'black', Point(125 + 500, self.fullscreen_button.pos.y).times(self.res_scalar))
+                self.settings_font.full_render("Best time:", "white", Point(125 + 250, 25).times(self.res_scalar))
+                self.settings_font.full_render(str(self.config_settings["best_time"]), 'white', Point(125 + 250, self.fullscreen_button.pos.y).times(self.res_scalar))
+                self.settings_font.full_render("Best score:", "white", Point(125 + 500, 25).times(self.res_scalar))
+                self.settings_font.full_render(str(self.config_settings["best_score"]), 'white', Point(125 + 500, self.fullscreen_button.pos.y).times(self.res_scalar))
                 
                 if self.config_settings["fullscreen"]:
                     self.fullscreen_button.with_image("checkmark.png")

@@ -6,7 +6,7 @@ from util.TextHelpers import TextHelpers
 from util.mathextra.Location import Point
 
 class Button(Sprite):
-    def __init__(self, screen: pygame.Surface, pos: Point, size: Point, text: str, font_size: float = 20, bg_color="gray", bg_hover="green", font="times new roman"):
+    def __init__(self, screen: pygame.Surface, pos: Point, size: Point, text: str, font_size: float = 20, bg_color: pygame.Color="gray", bg_hover: pygame.Color="green", font="times new roman"):
         super().__init__(screen, size)
         self.at(pos)
         self.text = text

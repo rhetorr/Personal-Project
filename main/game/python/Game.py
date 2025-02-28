@@ -23,7 +23,7 @@ pygame.font.init()
 
 class Game(VisualsManager):
     def __init__(self, caption: str, fps: int):
-        super().__init__((1200,1000), caption, "LOGO.png", Mouse())
+        super().__init__((1200,1000), caption, "icon.png", Mouse())
         self.state = GameStates.LAUNCHING
         self.fps = fps
         self.clock = pygame.time.Clock() #game clock
@@ -330,4 +330,4 @@ class Game(VisualsManager):
         pygame.quit()
         Settings.save_settings(self.config_settings)
     
-Game("game", 60).run()
+Game("Space Explorer", 60).run()
