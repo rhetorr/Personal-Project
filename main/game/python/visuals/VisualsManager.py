@@ -87,8 +87,8 @@ class VisualsManager:
                 
                 self.settings_font.full_render("Best time:", "white", Point(375, 25).times(self.res_scalar))
                 self.settings_font.full_render(str(self.config_settings["best_time"]), 'white', Point(375, self.fullscreen_button.pos.y).times(self.res_scalar))
-                self.settings_font.full_render("Best score:", "white", Point(375, 25).times(self.res_scalar))
-                self.settings_font.full_render(str(self.config_settings["best_score"]), 'white', Point(375, self.fullscreen_button.pos.y).times(self.res_scalar))
+                self.settings_font.full_render("Best score:", "white", Point(625, 25).times(self.res_scalar))
+                self.settings_font.full_render(str(self.config_settings["best_score"]), 'white', Point(625, self.fullscreen_button.pos.y).times(self.res_scalar))
                 
                 if self.config_settings["fullscreen"]:
                     self.fullscreen_button.with_image("checkmark.png")
