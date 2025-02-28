@@ -11,8 +11,6 @@ class Sprite(RectHelpers):
         super().__delattr__("__rect_value__")
         self.sprite = pygame.surface.Surface(size.tuple())
         self.i_h = ImageHelpers(VisualsUtil._ASSETS_PATH)
-        self.__saved_pos__ = Point.fill(0)
-        self._shown_ = False
         self.__window__ = window
         self.size.with_mid(Point(self.__window__.get_width(), self.__window__.get_height()))
     def with_image(self, name, rotation: Angle = Angle.in_degrees(0)):
@@ -21,20 +19,8 @@ class Sprite(RectHelpers):
         return self
     def render(self):
         self.__window__.blit(self.sprite, self.pos.tuple())
-    def hide(self):
-        if self._shown_:
-            self.__saved_pos__ = self.pos
-            self.pos = self.size.negate().minus(Point.fill(100))
-        return self
-    def show(self):
-        if not self._shown_:
-            self.pos = self.__saved_pos__
-        return self
     def at(self, pos: Point):
-        if self._shown_:
-            self.pos = pos
-        else:
-            self.__saved_pos__ = pos
+        self.pos = pos
         return self
     def move_y(self, amount: float):
         self.at(self.pos.plus(Point(0, amount)))

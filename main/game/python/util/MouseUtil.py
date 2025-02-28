@@ -30,12 +30,12 @@ class Mouse:
         self.pos = self._get_pos_()
         
         self.__left_history__[1] = self.__left_history__[0]
-        self.__right_history__[1] = self.__right_history__[0]
-        self.__middle_history__[1] = self.__middle_history__[0]
+        # self.__right_history__[1] = self.__right_history__[0]
+        # self.__middle_history__[1] = self.__middle_history__[0]
         
         self.__left_history__[0] = self._get_left_click_()
-        self.__right_history__[0] = self._get_right_click_()
-        self.__middle_history__[0] = self._get_middle_click_()
+        # self.__right_history__[0] = self._get_right_click_()
+        # self.__middle_history__[0] = self._get_middle_click_()
         
         if self.left(False, False):
             self.left_click = ClickType.IDLE
@@ -46,23 +46,23 @@ class Mouse:
         elif self.left(True, False):
             self.left_click = ClickType.RELEASED
             
-        if self.right(False, False):
-            self.right_click = ClickType.IDLE
-        elif self.right(False, True):
-            self.right_click = ClickType.PRESSED
-        elif self.right(True, True):
-            self.right_click = ClickType.HOLDING
-        elif self.right(True, False):
-            self.right_click = ClickType.RELEASED
+        # if self.right(False, False):
+        #     self.right_click = ClickType.IDLE
+        # elif self.right(False, True):
+        #     self.right_click = ClickType.PRESSED
+        # elif self.right(True, True):
+        #     self.right_click = ClickType.HOLDING
+        # elif self.right(True, False):
+        #     self.right_click = ClickType.RELEASED
             
-        if self.middle(False, False):
-            self.middle_click = ClickType.IDLE
-        elif self.middle(False, True):
-            self.middle_click = ClickType.PRESSED
-        elif self.middle(True, True):
-            self.middle_click = ClickType.HOLDING
-        elif self.middle(True, False):
-            self.middle_click = ClickType.RELEASED
+        # if self.middle(False, False):
+        #     self.middle_click = ClickType.IDLE
+        # elif self.middle(False, True):
+        #     self.middle_click = ClickType.PRESSED
+        # elif self.middle(True, True):
+        #     self.middle_click = ClickType.HOLDING
+        # elif self.middle(True, False):
+        #     self.middle_click = ClickType.RELEASED
     
     def left(self, a:bool, b:bool) -> bool:
         return self.__left_history__[0]==a and self.__left_history__[1]==b

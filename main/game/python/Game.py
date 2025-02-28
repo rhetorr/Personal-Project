@@ -53,14 +53,13 @@ class Game(VisualsManager):
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.set_state(GameStates.QUITTING)
-        if self.state == GameStates.QUITTING:
-            self.__running__ = False
     
     def run(self): #main game loop
         self.__running__ = True
-        player = Rocket(self._window_, Point.fill(64), self.res_scalar, self.config_settings["fuel_usage"])
         dt_last_frame = 0.0
-        player_bounds = Point(self._window_.get_width()-player.size.x, self._window_.get_height()-player.size.y)
+        
+        player = Rocket(self._window_, Point.fill(64), self.res_scalar, self.config_settings["fuel_usage"])
+        player_bounds = Point(self.window_width-player.size.x, self.window_height-player.size.y)
         player_vel = Point(0,0)
         lookahead_player = player.pos.get_point()
         player_speed = Point(self.bg_vel, self.bg_vel)
@@ -120,7 +119,8 @@ class Game(VisualsManager):
             
             match self.state:
                 case GameStates.LAUNCHING: #reset all values for game start
-                    self.set_state(GameStates.MENU)
+                    if dt_last_frame > 0:
+                        self.set_state(GameStates.MENU)
                 case GameStates.MENU:
                     if self.play_button.Lpressed(self.mouse):
                         self.set_state(GameStates.STARTING)
@@ -150,7 +150,7 @@ class Game(VisualsManager):
                         fuel_cell.reset()
                         self.space_bg_1.at(Point.fill(0))
                         self.space_bg_2.at(Point(0,-self.space_bg_2.size.y+100))
-                        player.at(Point(self._window_.get_width()/2 - player.size.x/2, self._window_.get_height() - player.size.y - 8))
+                        player.at(Point(self.window_width/2 - player.size.x/2, self.window_height - player.size.y - 8))
                     if time.time() - game_start_time > starting_intermission:
                         self.set_state(GameStates.PLAYING)
                         just_starting = False
@@ -169,25 +169,26 @@ class Game(VisualsManager):
                         if game_time >= self.config_settings["best_time"]:
                             self.config_settings["best_time"] = game_time
                         
-                        if self.space_bg_1.pos.y + self.bg_vel*dt_last_frame + 100 > self._window_.get_height():
-                            self.space_bg_1.show().at(Point.fill(0)).render()
-                            self.space_bg_2.show().at(Point(0,-self.space_bg_2.size.y+100)).render()
+                        bg_movement = self.bg_vel*dt_last_frame
+                        if self.space_bg_1.pos.y + bg_movement + 100 > self.window_height:
+                            self.space_bg_1.at(Point.fill(0))
+                            self.space_bg_2.at(Point(0,-self.space_bg_2.size.y+100))
                         else:
-                            self.space_bg_1.show().move_y(self.bg_vel*dt_last_frame).render()
-                            self.space_bg_2.show().move_y(self.bg_vel*dt_last_frame).render()
+                            self.space_bg_1.move_y(bg_movement)
+                            self.space_bg_2.move_y(bg_movement)
                             
                         if fuel_cell.spawned:
                             if fuel_cell.collided(player.rect):
                                 player.fuel = min(player.fuel + fuel_cell.fuel, self.config_settings["max_fuel"])
                                 fuel_collected += 1
                                 fuel_cell.reset()
-                            elif fuel_cell.pos.y > self._window_.get_height():
+                            elif fuel_cell.pos.y > self.window_height:
                                 fuel_cell.reset()
                             else:
                                 fuel_cell.move_y(next_fuel_speed * dt_last_frame)
                         else:
                             if time_since_fuel_spawn > next_fuel_spawn:
-                                fuel_cell.spawn(random.randint(0, self._window_.get_width()-round(fuel_cell.size.x)))
+                                fuel_cell.spawn(random.randint(0, self.window_width-round(fuel_cell.size.x)))
                                 time_since_fuel_spawn = 0
                                 next_fuel_spawn = random.randint(3, 10)
                                 next_fuel_speed = random.randint(self.bg_vel,self.bg_vel+150)
@@ -197,14 +198,14 @@ class Game(VisualsManager):
                         if asteroid_1.spawned:
                             if asteroid_1.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
-                            elif asteroid_1.pos.y > self._window_.get_height():
+                            elif asteroid_1.pos.y > self.window_height:
                                 asteroid_1.reset()
                             else:
                                 asteroid_1.spin()
                                 asteroid_1.move_along_path(dt_last_frame)
                         else:
                             if time_since_asteroid_spawn_1 > next_asteroid_spawn_1:
-                                asteroid_1.spawn(random.randint(0, self._window_.get_width()-round(asteroid_1.size.x)))
+                                asteroid_1.spawn(random.randint(0, self.window_width-round(asteroid_1.size.x)))
                                 time_since_asteroid_spawn_1 = 0
                                 next_asteroid_spawn_1 = random.randint(0, 2)
                                 asteroid_1.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
@@ -214,14 +215,14 @@ class Game(VisualsManager):
                         if asteroid_2.spawned:
                             if asteroid_2.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
-                            elif asteroid_2.pos.y > self._window_.get_height():
+                            elif asteroid_2.pos.y > self.window_height:
                                 asteroid_2.reset()
                             else:
                                 asteroid_2.spin()
                                 asteroid_2.move_along_path(dt_last_frame)
                         else:
                             if time_since_asteroid_spawn_2 > next_asteroid_spawn_2:
-                                asteroid_2.spawn(random.randint(0, self._window_.get_width()-round(asteroid_2.size.x)))
+                                asteroid_2.spawn(random.randint(0, self.window_width-round(asteroid_2.size.x)))
                                 time_since_asteroid_spawn_2 = 0
                                 next_asteroid_spawn_2 = random.randint(1, 4)
                                 asteroid_2.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
@@ -231,14 +232,14 @@ class Game(VisualsManager):
                         if asteroid_3.spawned:
                             if asteroid_3.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
-                            elif asteroid_3.pos.y > self._window_.get_height():
+                            elif asteroid_3.pos.y > self.window_height:
                                 asteroid_3.reset()
                             else:
                                 asteroid_3.spin()
                                 asteroid_3.move_along_path(dt_last_frame)
                         else:
                             if time_since_asteroid_spawn_3 > next_asteroid_spawn_3:
-                                asteroid_3.spawn(random.randint(0, self._window_.get_width()-round(asteroid_3.size.x)))
+                                asteroid_3.spawn(random.randint(0, self.window_width-round(asteroid_3.size.x)))
                                 time_since_asteroid_spawn_3 = 0
                                 next_asteroid_spawn_3 = random.randint(0, 1)
                                 asteroid_3.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
@@ -248,14 +249,14 @@ class Game(VisualsManager):
                         if asteroid_4.spawned:
                             if asteroid_4.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
-                            elif asteroid_4.pos.y > self._window_.get_height():
+                            elif asteroid_4.pos.y > self.window_height:
                                 asteroid_4.reset()
                             else:
                                 asteroid_4.spin()
                                 asteroid_4.move_along_path(dt_last_frame)
                         else:
                             if time_since_asteroid_spawn_4 > next_asteroid_spawn_4:
-                                asteroid_4.spawn(random.randint(0, self._window_.get_width()-round(asteroid_4.size.x)))
+                                asteroid_4.spawn(random.randint(0, self.window_width-round(asteroid_4.size.x)))
                                 time_since_asteroid_spawn_4 = 0
                                 next_asteroid_spawn_4 = random.randint(0, 1)
                                 asteroid_4.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
@@ -265,34 +266,36 @@ class Game(VisualsManager):
                         if asteroid_5.spawned:
                             if asteroid_5.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
-                            elif asteroid_5.pos.y > self._window_.get_height():
+                            elif asteroid_5.pos.y > self.window_height:
                                 asteroid_5.reset()
                             else:
                                 asteroid_5.spin()
                                 asteroid_5.move_along_path(dt_last_frame)
                         else:
                             if time_since_asteroid_spawn_5 > next_asteroid_spawn_5:
-                                asteroid_5.spawn(random.randint(0, self._window_.get_width()-round(asteroid_5.size.x)))
+                                asteroid_5.spawn(random.randint(0, self.window_width-round(asteroid_5.size.x)))
                                 time_since_asteroid_spawn_5 = 0
                                 next_asteroid_spawn_5 = random.randint(2, 4)
                                 asteroid_5.vector = Vector(float(random.randint(self.bg_vel-150, self.bg_vel+100)), Angle.in_degrees(float(random.randint(60, 120))))
                             else:
                                 time_since_asteroid_spawn_5 += dt_last_frame
                             
+                        xspeed = player_speed.x * dt_last_frame
+                        yspeed = player_speed.y * dt_last_frame
                         if keys[pygame.K_w] and within_window_y:
-                            player_vel.y = -player_speed.y * dt_last_frame
+                            player_vel.y = -yspeed
                         elif keys[pygame.K_s] and within_window_y:
-                            player_vel.y = player_speed.y * dt_last_frame
+                            player_vel.y = yspeed
                         else:
                             player_vel.y = 0
                         if keys[pygame.K_d] and within_window_x:
-                            player_vel.x = player_speed.x * dt_last_frame
+                            player_vel.x = xspeed
                         elif keys[pygame.K_a] and within_window_x:
-                            player_vel.x = -player_speed.x * dt_last_frame
+                            player_vel.x = -xspeed
                         else:
                             player_vel.x = 0
                             
-                        lookahead_player = player.pos.get_point().plus(player_vel)
+                        lookahead_player = player.pos.translate_by(player_vel).get_point()
                         within_window_x = 0 < lookahead_player.x and lookahead_player.x < player_bounds.x
                         within_window_y = 0 < lookahead_player.y and lookahead_player.y < player_bounds.y
                         if within_window_x:
@@ -300,7 +303,7 @@ class Game(VisualsManager):
                         if within_window_y:
                             player.move_y(player_vel.y)
                             
-                        temp = (0.25) if (player_vel.norm() == 0) else (player_vel.norm()/(player_speed.x*dt_last_frame))
+                        temp = (0.25) if (player_vel.norm() == 0) else (player_vel.norm()/xspeed)
                         player.fuel -= player.fuel_usage * temp
                     time_since_esc += dt_last_frame
                 case GameStates.PAUSED:
@@ -322,13 +325,13 @@ class Game(VisualsManager):
                         fuel_cell.reset()
                         self.set_state(GameStates.MENU)
                 case GameStates.QUITTING: #final actions before closings
-                    player.at(Point.fill(0))
+                    self.__running__ = False
+                    Settings.save_settings(self.config_settings)
+                    logger.join()
             self.graphics(self.state, player, fuel_cell, asteroid_1, asteroid_2, asteroid_3, asteroid_4, asteroid_5, game_time, score)
             self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
             self.quit_request()
-        logger.join()
         pygame.quit()
-        Settings.save_settings(self.config_settings)
     
 Game("Space Explorer", 60).run()
