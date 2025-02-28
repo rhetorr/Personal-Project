@@ -8,7 +8,8 @@ _EMPTY_SETTINGS = {
     "fullscreen": False,
     "fuel_usage": 2/60, # per second per frame
     "max_fuel": 125,
-    "best_time": 0.0
+    "best_time": 0.0,
+    "best_score": 0.0
     }
 
 def save_settings(config: dict):

@@ -65,6 +65,9 @@ class Game(VisualsManager):
         lookahead_player = player.pos.get_point()
         player_speed = Point(self.bg_vel, self.bg_vel)
         
+        fuel_collected = 0
+        score = 0
+        
         asteroid_1 = Asteroid(self._window_, Point.fill(100), self.res_scalar)
         time_since_asteroid_spawn_1 = 0
         next_asteroid_spawn_1 = 0
@@ -135,6 +138,7 @@ class Game(VisualsManager):
                         just_starting = True
                         game_start_time = time.time()
                         time_paused = 0
+                        fuel_collected = 0
                         player.fuel = 100
                         collided_with_asteroid = False
                         asteroid_1.reset()
@@ -173,8 +177,9 @@ class Game(VisualsManager):
                             
                         if fuel_cell.spawned:
                             if fuel_cell.collided(player.rect):
-                                fuel_cell.reset()
                                 player.fuel = min(player.fuel + fuel_cell.fuel, self.config_settings["max_fuel"])
+                                fuel_collected += 1
+                                fuel_cell.reset()
                             elif fuel_cell.pos.y > self._window_.get_height():
                                 fuel_cell.reset()
                             else:
@@ -298,6 +303,8 @@ class Game(VisualsManager):
                         player.fuel -= player.fuel_usage * temp
                     time_since_esc += dt_last_frame
                 case GameStates.PAUSED:
+                    score = round(game_time * max(fuel_collected, 1))
+                    self.config_settings["best_score"] = max(self.config_settings["best_score"], score)
                     time_paused += dt_last_frame
                     if keys[pygame.K_ESCAPE]:
                         if time_since_esc > 0.2:
@@ -307,13 +314,15 @@ class Game(VisualsManager):
                         self.set_state(GameStates.MENU)
                     time_since_esc += dt_last_frame
                 case GameStates.LOST: #lost, ready to go back to menu
+                    score = round(game_time * max(fuel_collected, 1))
+                    self.config_settings["best_score"] = max(self.config_settings["best_score"], score)
                     player.at(player.pos.get_point())
                     if self.menu_button.Lpressed(self.mouse):
                         fuel_cell.reset()
                         self.set_state(GameStates.MENU)
                 case GameStates.QUITTING: #final actions before closings
                     player.at(Point.fill(0))
-            self.graphics(self.state, player, fuel_cell, asteroid_1, asteroid_2, asteroid_3, asteroid_4, asteroid_5, game_time, dt_last_frame)
+            self.graphics(self.state, player, fuel_cell, asteroid_1, asteroid_2, asteroid_3, asteroid_4, asteroid_5, game_time, score)
             self.mouse.update()
             dt_last_frame = self.clock.tick(self.fps) / 1000
             self.quit_request()

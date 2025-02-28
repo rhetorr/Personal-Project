@@ -60,7 +60,7 @@ class VisualsManager:
         pygame.draw.line(self._window_, "black", (self._window_.get_width()/2, 0), (self._window_.get_width()/2, self._window_.get_height()))
         pygame.draw.line(self._window_, "black", (0, self._window_.get_height()/2), (self._window_.get_width(), self._window_.get_height()/2))
     
-    def graphics(self, state: GameStates, player: Rocket, fuel: FuelCell, asteroid_1: Asteroid, asteroid_2: Asteroid, asteroid_3: Asteroid, asteroid_4: Asteroid, asteroid_5: Asteroid, timer, dt:float):
+    def graphics(self, state: GameStates, player: Rocket, fuel: FuelCell, asteroid_1: Asteroid, asteroid_2: Asteroid, asteroid_3: Asteroid, asteroid_4: Asteroid, asteroid_5: Asteroid, timer, score):
         self._window_.fill("white")
         
         self.icon_menu.hide()
@@ -111,10 +111,18 @@ class VisualsManager:
                 
                 if state == GameStates.PAUSED:
                     self.menu_button.at(Point(15, 15)).show().render(self.mouse)
-                    self.settings_font.full_render(" PAUSED ", "white", Point._key(), highlighted=True, highlight_color="orange")
+                    ttt = self.settings_font.make_text_highlighted(" PAUSED ", "white", "orange")
+                    middlepos: Point = Point.from_tuple(self._window_.get_size()).div_by(2).minus(Point.from_tuple(ttt.get_size()).div_by(2))
+                    self.settings_font.render(ttt, middlepos)
+                    self.settings_font.full_render("score: " + str(score), "white", middlepos.plus(Point(0,ttt.get_height())), highlighted=True, highlight_color="orange")
+                    self.settings_font.full_render("best: " + str(self.config_settings["best_score"]), "white", middlepos.plus(Point(0,ttt.get_height()*2)), highlighted=True, highlight_color="orange")
                 elif state == GameStates.LOST:
                     self.menu_button.at(Point(15, 15)).show().render(self.mouse)
-                    self.settings_font.full_render(" LOST ", "red", Point._key(), highlighted=True, highlight_color="gray")
+                    ttt = self.settings_font.make_text_highlighted(" LOST ", "red", "gray")
+                    middlepos: Point = Point.from_tuple(self._window_.get_size()).div_by(2).minus(Point.from_tuple(ttt.get_size()).div_by(2))
+                    self.settings_font.render(ttt, middlepos)
+                    self.settings_font.full_render("score: " + str(score), "white", middlepos.plus(Point(0,ttt.get_height())), highlighted=True, highlight_color="gray")
+                    self.settings_font.full_render("best: " + str(self.config_settings["best_score"]), "white", middlepos.plus(Point(0,ttt.get_height()*2)), highlighted=True, highlight_color="gray")
             case GameStates.QUITTING:
                 self.font.full_render("QUITTING...", "black", Point._key())
         pygame.display.update()
