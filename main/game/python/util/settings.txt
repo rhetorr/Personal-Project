@@ -1,1 +1,1 @@
-{'main_monitor': 0, 'fullscreen': False, 'fuel_usage': 0.03333333333333333, 'max_fuel': 125, 'best_time': 0.0}
+{'main_monitor': 0, 'fullscreen': False, 'fuel_usage': 0.03333333333333333, 'max_fuel': 125, 'best_time': 0, 'best_score': 0}
