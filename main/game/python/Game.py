@@ -195,7 +195,7 @@ class Game(VisualsManager):
                                 time_since_fuel_spawn += dt_last_frame
                         
                         if asteroid_1.spawned:
-                            if asteroid_1.collided(player_mask, player.pos.get_point()):
+                            if asteroid_1.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
                             elif asteroid_1.pos.y > self._window_.get_height():
                                 asteroid_1.reset()
@@ -212,7 +212,7 @@ class Game(VisualsManager):
                                 time_since_asteroid_spawn_1 += dt_last_frame
                                 
                         if asteroid_2.spawned:
-                            if asteroid_2.collided(player_mask, player.pos.get_point()):
+                            if asteroid_2.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
                             elif asteroid_2.pos.y > self._window_.get_height():
                                 asteroid_2.reset()
@@ -229,7 +229,7 @@ class Game(VisualsManager):
                                 time_since_asteroid_spawn_2 += dt_last_frame
                                 
                         if asteroid_3.spawned:
-                            if asteroid_3.collided(player_mask, player.pos.get_point()):
+                            if asteroid_3.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
                             elif asteroid_3.pos.y > self._window_.get_height():
                                 asteroid_3.reset()
@@ -246,7 +246,7 @@ class Game(VisualsManager):
                                 time_since_asteroid_spawn_3 += dt_last_frame
                                 
                         if asteroid_4.spawned:
-                            if asteroid_4.collided(player_mask, player.pos.get_point()):
+                            if asteroid_4.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
                             elif asteroid_4.pos.y > self._window_.get_height():
                                 asteroid_4.reset()
@@ -263,7 +263,7 @@ class Game(VisualsManager):
                                 time_since_asteroid_spawn_4 += dt_last_frame
                                 
                         if asteroid_5.spawned:
-                            if asteroid_5.collided(player_mask, player.pos.get_point()):
+                            if asteroid_5.collided(player_mask, lookahead_player):
                                 collided_with_asteroid = True
                             elif asteroid_5.pos.y > self._window_.get_height():
                                 asteroid_5.reset()

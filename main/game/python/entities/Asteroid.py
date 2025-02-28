@@ -16,6 +16,7 @@ class Asteroid:
         self.fire_size = self.size.times(Point(1.8, 3)).scale_by(1.1)
         self.fire = self.i_h.resize(self.i_h.get("fire.png"), self.fire_size)
         
+        self.lookahead = Point(0,0)
         self.pos: Orientation = Orientation.init(size.negate().minus(Point.fill(200)), Angle.in_degrees(0))
         self.vector = Vector(0, Angle.in_degrees(180))
         self.angle_vel = Angle.in_degrees(random.randint(-20, 20) / 60) # deg/s
@@ -50,10 +51,11 @@ class Asteroid:
         # temp.x += vel.x
         # temp.y += vel.y
         # return temp.colliderect(other)
-        return self.asteroid_mask.overlap(other, other_point.minus(self.pos).round().tuple())
+        return self.asteroid_mask.overlap(other, other_point.minus(self.lookahead).round().tuple())
     
     def move_along_path(self, dt):
         self.pos = self.pos.translate_by(self.vector.get_point().scale_by(dt))
+        self.lookahead = self.pos.translate_by(self.vector.get_point().scale_by(dt))
         return self
     def reset(self):
         self.spawned = False
