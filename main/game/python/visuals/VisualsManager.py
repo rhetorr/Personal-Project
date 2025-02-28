@@ -88,6 +88,12 @@ class VisualsManager:
                 self.back_button.at(Point(15,15).times(self.res_scalar)).show().render(self.mouse)
                 
                 self.settings_font.render(self.txt_fullscreen, Point(125, 25).times(self.res_scalar))
+                
+                self.settings_font.full_render("Best time:", "black", Point(125 + 250, 25).times(self.res_scalar))
+                self.settings_font.full_render(str(self.config_settings["best_time"]), 'black', Point(125 + 250, self.fullscreen_button.pos.y).times(self.res_scalar))
+                self.settings_font.full_render("Best score:", "black", Point(125 + 500, 25).times(self.res_scalar))
+                self.settings_font.full_render(str(self.config_settings["best_score"]), 'black', Point(125 + 500, self.fullscreen_button.pos.y).times(self.res_scalar))
+                
                 if self.config_settings["fullscreen"]:
                     self.fullscreen_button.with_image("checkmark.png")
                 else:
